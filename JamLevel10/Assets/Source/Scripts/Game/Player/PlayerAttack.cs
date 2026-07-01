@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private Bullet _bulletPrefab;
+    [SerializeField] private PlayerBullet _bulletPrefab;
     [SerializeField] private float _fireRate = 0.15f;
 
     private Player _player;

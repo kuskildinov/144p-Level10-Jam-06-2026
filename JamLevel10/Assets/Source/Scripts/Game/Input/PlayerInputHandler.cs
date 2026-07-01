@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     public event Action<Vector2> MoveInput;
-    public event Action DashInput;
+    public event Action<bool> DashInput;
     public event Action<bool> AttackInput;
 
     public void OnMove(InputValue value)
@@ -17,20 +17,22 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (value.isPressed)
         {
-            DashInput?.Invoke();
+            DashInput?.Invoke(true);
+        }
+        else
+        {
+            DashInput?.Invoke(false);
         }
     }
 
     public void OnAttack(InputValue value)
     {
         if (value.isPressed)
-        {
-            Debug.Log("Нажали");
+        {          
             AttackInput?.Invoke(true);
         }
         else
-        {
-            Debug.Log("Отпустили");
+        {           
             AttackInput?.Invoke(false);
         }
     }

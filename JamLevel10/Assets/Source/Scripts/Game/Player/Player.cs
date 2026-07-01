@@ -42,9 +42,9 @@ public class Player : MonoBehaviour
         _movment.Initialize(this, _inputHandler);
     }
 
-    public void TryDash()
-    {
-        Debug.Log("Dash");
+    public void TryDash(bool value)
+    {       
+        _visual.SetMiniMode(value);
     }
 
     #endregion
@@ -65,6 +65,14 @@ public class Player : MonoBehaviour
         _attack = GetComponentInChildren<PlayerAttack>();
         if (_attack == null) { Debug.LogError("Error: Cant find PlayerAttack on Player"); return; }
         _attack.Initialize(this, _inputHandler);
+    }
+
+    #endregion
+    #region >>> HEALTH
+
+    public void TakeDamage()
+    {
+
     }
 
     #endregion

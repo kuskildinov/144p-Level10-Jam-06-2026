@@ -116,7 +116,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""id"": ""01f9d1b3-e471-4b41-b076-f77c88bd5bfe"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
                 }
             ],

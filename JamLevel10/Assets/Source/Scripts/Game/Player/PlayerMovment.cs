@@ -67,9 +67,9 @@ public class PlayerMovment : MonoBehaviour
         _moveDirection = moveInput.normalized;
     }
 
-    private void OnDashInputChanged()
+    private void OnDashInputChanged(bool value)
     {
-        _player.TryDash();
+        _player.TryDash(value);
     }
 
     #endregion

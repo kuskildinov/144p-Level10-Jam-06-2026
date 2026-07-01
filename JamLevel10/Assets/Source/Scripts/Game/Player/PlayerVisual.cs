@@ -9,6 +9,7 @@ public class PlayerVisual : MonoBehaviour
     private Player _player;
     private PlayerInputHandler _inputHandler;
     private Tween _shakeTween;
+    private Tween _scaleTween;
 
     public void Initialize(Player player, PlayerInputHandler inputHandler)
     {
@@ -26,14 +27,24 @@ public class PlayerVisual : MonoBehaviour
         .SetLoops(-1, LoopType.Yoyo)
         .SetEase(Ease.InOutSine);
     }
+   
 
-    #region >>> INPUT
-
-    private void OnDashInputChanged()
+    public void SetMiniMode(bool mini)
     {
-        _player.TryDash();
+        _scaleTween?.Kill();
+
+        if (mini)
+        {
+            _scaleTween = _player.transform.DOScale(0.6f, 0.1f);
+        }
+        else
+        {
+            _scaleTween = _player.transform.DOScale(1f, 0.1f);
+        }
     }
 
+    #region >>> INPUT
+   
     private void OnAttackInputChanged(bool isPressed)
     {
       
@@ -44,14 +55,12 @@ public class PlayerVisual : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        _inputHandler.AttackInput += OnAttackInputChanged;
-        _inputHandler.DashInput += OnDashInputChanged;
+        _inputHandler.AttackInput += OnAttackInputChanged;       
     }
 
     private void UnsubscriteFromEvents()
     {
-        _inputHandler.AttackInput -= OnAttackInputChanged;
-        _inputHandler.DashInput -= OnDashInputChanged;
+        _inputHandler.AttackInput -= OnAttackInputChanged;       
     }
 
     #endregion
