@@ -1,5 +1,6 @@
 public enum LootType
 {
-    Coin,
-    Health
+    None,
+    Cristal,
+    Health,
 }

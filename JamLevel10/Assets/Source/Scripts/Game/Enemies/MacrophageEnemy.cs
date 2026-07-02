@@ -23,12 +23,11 @@ public class MacrophageEnemy : Enemy
         Escape
     }
 
-    protected override void Awake()
+    public override void Initialize(EnemiesRoot root, Transform attackPoint,Loot loot)
     {
-        base.Awake();
+        base.Initialize(root, attackPoint, loot);
 
         _state = State.MoveForward;
-
         FaceLeft();
     }
 
@@ -55,9 +54,9 @@ public class MacrophageEnemy : Enemy
     {
         transform.position += Vector3.left * moveSpeed * Time.deltaTime;
 
-        if (transform.position.x <= _leftDestroyX)
+        if (transform.position.x <= _leftDestroyX || transform.position.y <= _bottomDestroyY || transform.position.y >= _topDestroyY)
         {
-            Destroy(gameObject);
+            _root.OnEnemyDead(this);
         }
     }
 
@@ -71,10 +70,11 @@ public class MacrophageEnemy : Enemy
         {
             Loot loot = hit.GetComponent<Loot>();
 
-            if (loot == null)
+            if (loot == null || loot.IsBusy)
                 continue;
 
             _targetLoot = loot;
+            _targetLoot.IsBusy = true;
             _state = State.SeekLoot;
             return;
         }
@@ -94,11 +94,17 @@ public class MacrophageEnemy : Enemy
             transform.position,
             _targetLoot.transform.position,
             lootSpeed * Time.deltaTime);
+               
 
         if (Vector3.Distance(
                 transform.position,
-                _targetLoot.transform.position) < 0.3f)
+                _targetLoot.transform.position) < 0.1f)
         {
+            if(_targetLoot == null)
+            {
+                _state = State.MoveForward;
+                return;
+            }
             PickLoot();
         }
     }
@@ -120,7 +126,7 @@ public class MacrophageEnemy : Enemy
 
         if (transform.position.x >= _rightDestroyX)
         {
-            Destroy(gameObject);
+            _root.OnEnemyDead(this);
         }
     }
 
@@ -145,6 +151,7 @@ public class MacrophageEnemy : Enemy
         {
             _carriedLoot.gameObject.SetActive(true);
             _carriedLoot.transform.position = transform.position;
+            _carriedLoot.IsBusy = false;
         }
 
         base.Die();

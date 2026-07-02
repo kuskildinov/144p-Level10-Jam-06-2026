@@ -3,6 +3,7 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
+    [SerializeField] private EnemyType _type;
     [SerializeField] protected int _maxHp = 3;
     [Header("Bounds")]
     [SerializeField] protected float _leftDestroyX = -15f;
@@ -16,13 +17,19 @@ public abstract class Enemy : MonoBehaviour
     [Header("Dead Effect")]
     [SerializeField] private DeadEffect _deadEffectPrefab;
 
+    protected EnemiesRoot _root;
     protected int _currentHp;
     protected bool _isDead;
     protected Coroutine _takeDamageCoroutine;
+    protected Loot _currentLootPrefab;
 
-    protected virtual void Awake()
+    public EnemyType Type => _type;
+
+    public virtual void Initialize(EnemiesRoot root, Transform attackPoint, Loot lootPrefab)
     {
+        _root = root;
         _currentHp = _maxHp;
+        _currentLootPrefab = lootPrefab;
     }
 
     public virtual void TakeDamage()
@@ -45,13 +52,21 @@ public abstract class Enemy : MonoBehaviour
     {
         _isDead = true;
         Instantiate(_deadEffectPrefab,transform.position,Quaternion.identity);
-        Destroy(gameObject);
+        TrySpawnLoot();
+        _root.OnEnemyDead(this);       
     }
 
     protected virtual void OnTouchPlayer(Player player)
     {
         player.TakeDamage();
         Die();
+    }
+
+    private void TrySpawnLoot()
+    {
+        if (_currentLootPrefab == null)
+            return;
+        Instantiate(_currentLootPrefab, transform.position,Quaternion.identity);
     }
 
     protected IEnumerator TakeDamageVisualRoutine()
@@ -80,4 +95,11 @@ public abstract class Enemy : MonoBehaviour
             OnTouchPlayer(player);
         }
     }
+}
+
+public enum EnemyType
+{
+    Macrophage,
+    Kamikadze,
+    Turret,
 }

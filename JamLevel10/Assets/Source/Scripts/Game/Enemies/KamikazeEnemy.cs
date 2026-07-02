@@ -26,8 +26,11 @@ public class KamikazeEnemy : Enemy
 
     private State _state;
 
-    private void Start()
+    public override void Initialize(EnemiesRoot root, Transform attackPoint, Loot loot)
     {
+        base.Initialize(root, attackPoint, loot);
+
+        _attackPosition = attackPoint;
         _state = State.MoveToPosition;
         _commonModel.gameObject.SetActive(true);
         _screamModel.gameObject.SetActive(false);
@@ -109,7 +112,7 @@ public class KamikazeEnemy : Enemy
 
         if (transform.position.x <= _leftDestroyX || transform.position.y <= _bottomDestroyY || transform.position.y >= _topDestroyY)
         {
-            Destroy(gameObject);
+            _root.OnEnemyDead(this);
         }
     }
 

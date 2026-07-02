@@ -23,8 +23,11 @@ public class TurretEnemy : Enemy
 
     private State _state;
 
-    private void Start()
+    public override void Initialize(EnemiesRoot root, Transform attackPoint, Loot loot)
     {
+        base.Initialize(root, attackPoint, loot);
+
+        attackPosition = attackPoint;
         _state = State.MoveToPosition;
     }
 

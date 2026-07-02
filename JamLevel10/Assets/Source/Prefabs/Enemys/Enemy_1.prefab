@@ -423,6 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76240074d5e6a72429a8f1e10c37f60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MacrophageEnemy
+  _type: 0
   _maxHp: 3
   _leftDestroyX: -15
   _rightDestroyX: 15
@@ -434,8 +435,8 @@ MonoBehaviour:
   _deadEffectPrefab: {fileID: 8572163080348544042, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
   _visual: {fileID: 7070612966662679060}
   _animtor: {fileID: 1521472537624618148}
-  moveSpeed: 2
-  lootSpeed: 5
+  moveSpeed: 8
+  lootSpeed: 15
   lootSearchRadius: 5
 --- !u!136 &7139801117485639618
 CapsuleCollider:
