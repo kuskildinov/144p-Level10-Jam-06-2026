@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    
-
     private PlayerRoot _root;
     private PlayerInputHandler _inputHandler;
     private PlayerMovment _movment;
     private PlayerVisual _visual;
-    private PlayerAttack _attack;   
-   
+    private PlayerAttack _attack;
+    private PlayerHealth _health;
 
     private bool _isActive;
     private bool _isAlive = true;
+    private bool _canTakeDamage = true;
 
     public bool IsActive => _isActive;
     public bool IsAlive => _isAlive;
+    public int CurrentHP => _health.CurrentHP;
 
     public void Initialize(PlayerRoot root, PlayerInputHandler inputHandler)
     {
@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
         InitializeMovment();
         InitializeVisual();
         InitializeAttack();
+        InitializeHealth();
     }
 
     #region >>> ACTIVATION
@@ -74,16 +75,49 @@ public class Player : MonoBehaviour
     #endregion
     #region >>> HEALTH
 
+    private void InitializeHealth()
+    {
+        _health = GetComponentInChildren<PlayerHealth>();
+        if (_health == null) { Debug.LogError("Error: Cant find PlayerHealth on Player"); return; }
+        _health.Initialize(this);
+    }
+
     public void TakeDamage()
     {
+        if (!_canTakeDamage)
+            return;
+
         _visual.OnTakeDamage();
+        _health.OnDamageTaked();
+        _root.UpdateHealthPanel();
+        StartCoroutine(TakeDamageInvisability());
     }
 
     public void TakeHealth()
     {
+        _health.OnHealthTaked();
+        _root.UpdateHealthPanel();
+    }
+
+    public void Dead()
+    {
 
     }
 
+    private IEnumerator TakeDamageInvisability()
+    {
+        _canTakeDamage = false;
+        yield return new WaitForSecondsRealtime(0.5f);
+        _canTakeDamage = true;
+    }
+
+    #endregion
+    #region >>> CRISTAL
+
+    private void TakeCristal()
+    { 
+    
+    }
 
     #endregion
 
@@ -93,6 +127,11 @@ public class Player : MonoBehaviour
         {
             TakeHealth();
             aid.Collect();
+        }
+        if(other.TryGetComponent<Cristal>(out Cristal cristal))
+        {
+            TakeCristal();
+            cristal.Collect();
         }
     }
 }

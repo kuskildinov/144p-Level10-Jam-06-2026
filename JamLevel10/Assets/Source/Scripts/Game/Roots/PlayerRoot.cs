@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerRoot : CompositeRoot
 {
     private Player _player;
+    private PlayerPanel _playerPanel;
     private PlayerInputHandler _inputHandler;
 
     private GameStatesRoot _gameStatesRoot;
@@ -12,6 +13,8 @@ public class PlayerRoot : CompositeRoot
         GetOtherLinks();
         InitializeInput();
         InitializePlayer();
+        InitializePlayerPanel();
+        UpdateHealthPanel();
         SubscribeToEvents();
     }
 
@@ -33,6 +36,21 @@ public class PlayerRoot : CompositeRoot
     private void TogglePlayerActivation(bool value)
     {
         _player.ToggleActivation(value);
+    }
+
+    #endregion
+    #region >>> PLAYER PANEL
+
+    private void InitializePlayerPanel()
+    {
+        _playerPanel = FindAnyObjectByType<PlayerPanel>();
+        if (_playerPanel == null) { Debug.LogError("Error: Cant find PlayerPanel on scene"); return; }
+        _playerPanel.Initialize(this);
+    }
+
+    public void UpdateHealthPanel()
+    {
+        _playerPanel.UpdateHealthCount(_player.CurrentHP);
     }
 
     #endregion
