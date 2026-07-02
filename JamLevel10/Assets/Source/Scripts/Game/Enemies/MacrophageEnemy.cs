@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class MacrophageEnemy : Enemy
 {
+    private const string AnimatorRunParam = "Run";
     [Header("Visual")]
     [SerializeField] private Transform _visual;
+    [SerializeField] private Animator _animtor;
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float lootSpeed = 5f;
@@ -85,6 +87,8 @@ public class MacrophageEnemy : Enemy
             _state = State.MoveForward;
             return;
         }
+
+        _animtor.SetBool(AnimatorRunParam, true);
 
         transform.position = Vector3.MoveTowards(
             transform.position,

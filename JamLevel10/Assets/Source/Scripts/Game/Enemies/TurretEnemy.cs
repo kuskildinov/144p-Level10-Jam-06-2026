@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class TurretEnemy : Enemy
 {
+    private const string AnimatorAttackParam = "Attack";
+
+    [Header("Attack Settings")]
     [SerializeField] private Transform attackPosition;
-
     [SerializeField] private float moveSpeed = 3f;
-
     [SerializeField] private EnemyBullet bulletPrefab;
     [SerializeField] private Transform firePoint;
-
     [SerializeField] private float fireRate = 1f;
+    [Header("Visual")]
+    [SerializeField] private Animator _animator;
 
     private float _nextShotTime;
 
@@ -52,6 +54,7 @@ public class TurretEnemy : Enemy
                 attackPosition.position) < 0.1f)
         {
             _state = State.Attack;
+            _animator.SetBool(AnimatorAttackParam, true);
         }
     }
 

@@ -1,12 +1,16 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    
+
     private PlayerRoot _root;
     private PlayerInputHandler _inputHandler;
     private PlayerMovment _movment;
     private PlayerVisual _visual;
-    private PlayerAttack _attack;
+    private PlayerAttack _attack;   
+   
 
     private bool _isActive;
     private bool _isAlive = true;
@@ -72,8 +76,23 @@ public class Player : MonoBehaviour
 
     public void TakeDamage()
     {
+        _visual.OnTakeDamage();
+    }
+
+    public void TakeHealth()
+    {
 
     }
 
+
     #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent<AID>(out AID aid))
+        {
+            TakeHealth();
+            aid.Collect();
+        }
+    }
 }
