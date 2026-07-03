@@ -7,6 +7,7 @@ public class PlayerRoot : CompositeRoot
     private PlayerInputHandler _inputHandler;
 
     private GameStatesRoot _gameStatesRoot;
+    private LevelRoot _levelRoot;
 
     public override void Compose()
     {
@@ -22,6 +23,9 @@ public class PlayerRoot : CompositeRoot
     {
         _gameStatesRoot = FindAnyObjectByType<GameStatesRoot>();
         if (_gameStatesRoot == null) Debug.LogError("Cant find GameStatesRoot on scene for PlayerRoot");
+
+        _levelRoot = FindAnyObjectByType<LevelRoot>();
+        if (_levelRoot == null) Debug.LogError("Cant find LevelRoot on scene for PlayerRoot");
     }
 
     #region >>> PLAYER
@@ -38,6 +42,32 @@ public class PlayerRoot : CompositeRoot
         _player.ToggleActivation(value);
     }
 
+    public void OnPlayerDead()
+    {
+        Destroy(_player.gameObject);
+       _levelRoot.OnPlayerDead();
+    }
+
+    #endregion
+    #region >>> CRISTALS
+
+    public void OnCristalTaked()
+    {
+        GlovalVars.CristalCount++;
+        UpdateCristalCount();
+        CheckCristalCollectionComplete();
+    }
+
+    private void CheckCristalCollectionComplete()
+    {
+        int currentCount = GlovalVars.CristalCount;
+        int maxCount = GlovalVars.CurrentMaxCristalCount;
+        if(currentCount >= maxCount)
+        {
+            Debug.Log("Уровень пройден!");
+        }
+    }
+
     #endregion
     #region >>> PLAYER PANEL
 
@@ -51,6 +81,16 @@ public class PlayerRoot : CompositeRoot
     public void UpdateHealthPanel()
     {
         _playerPanel.UpdateHealthCount(_player.CurrentHP);
+    }
+
+    public void UpdateCristalCount()
+    {
+        _playerPanel.UpdateCristalCount();
+    }
+
+    public void SetMaxCristalCount()
+    {
+        _playerPanel.SetMaxCristalCount();
     }
 
     #endregion

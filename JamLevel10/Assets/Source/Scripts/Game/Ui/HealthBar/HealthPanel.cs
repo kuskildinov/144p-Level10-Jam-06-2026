@@ -5,7 +5,7 @@ public class HealthPanel : MonoBehaviour
     [SerializeField] private HeartIcon[] _hearts;
 
     public void UpdateHealthCount(int healthCount)
-    {
+    {       
         healthCount = Mathf.Clamp(healthCount, 0, _hearts.Length);
 
         for (int i = 0; i < _hearts.Length; i++)

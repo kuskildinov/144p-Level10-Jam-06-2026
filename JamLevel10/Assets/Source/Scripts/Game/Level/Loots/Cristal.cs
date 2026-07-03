@@ -21,6 +21,9 @@ public class Cristal : Loot
 
     private void Update()
     {
+        if (_player == null ||_player.gameObject == null)
+            return;
+
         if (!_isMagnetized)
         {
             float sqrDistance =

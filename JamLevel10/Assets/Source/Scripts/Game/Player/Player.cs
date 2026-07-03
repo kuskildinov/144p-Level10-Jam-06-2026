@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private float _dashTime = 2f;
     private PlayerRoot _root;
     private PlayerInputHandler _inputHandler;
     private PlayerMovment _movment;
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour
     private bool _isActive;
     private bool _isAlive = true;
     private bool _canTakeDamage = true;
+    private bool _isDash = false;
 
     public bool IsActive => _isActive;
     public bool IsAlive => _isAlive;
@@ -48,8 +50,25 @@ public class Player : MonoBehaviour
     }
 
     public void TryDash(bool value)
-    {       
-        _visual.SetMiniMode(value);
+    {
+        if (_isDash)
+            return;
+
+        StartCoroutine(DashRoutine());
+    }
+
+    private IEnumerator DashRoutine()
+    {
+        _isDash = true;
+        _visual.SetMiniMode(true);
+        _movment.SetDashSpeed();
+
+        yield return new WaitForSecondsRealtime(_dashTime);
+
+        _visual.SetMiniMode(false);
+        _movment.SetNormalSpeed();
+        _isDash = false;
+        yield return null;
     }
 
     #endregion
@@ -101,22 +120,25 @@ public class Player : MonoBehaviour
 
     public void Dead()
     {
-
+        _visual.OnDead();
+        _root.OnPlayerDead();
     }
 
     private IEnumerator TakeDamageInvisability()
     {
         _canTakeDamage = false;
-        yield return new WaitForSecondsRealtime(0.5f);
+        _visual.ShowInvisFrameBlinks();
+        yield return new WaitForSecondsRealtime(1f);
         _canTakeDamage = true;
+        _visual.HideInvisFrameBlinks();
     }
 
     #endregion
     #region >>> CRISTAL
 
     private void TakeCristal()
-    { 
-    
+    {
+        _root.OnCristalTaked();
     }
 
     #endregion

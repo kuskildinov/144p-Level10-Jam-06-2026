@@ -38,6 +38,7 @@ public class HeartIcon : MonoBehaviour
         if (IsShow)
             return;
 
+        IsShow = true;
         _showSequence?.Kill();
         _hideSequence?.Kill();
         _breathTween?.Kill();
@@ -71,6 +72,7 @@ public class HeartIcon : MonoBehaviour
         if (!IsShow)
             return;
 
+        IsShow = false;
         _showSequence?.Kill();
         _hideSequence?.Kill();
         _breathTween?.Kill();

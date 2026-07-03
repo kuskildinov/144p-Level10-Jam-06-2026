@@ -50,8 +50,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4840784763844341354, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
       propertyPath: m_Name
-      value: DeadEffect(Enemy_1)
+      value: DeadEffect(Player)
       objectReference: {fileID: 0}
+    - target: {fileID: 7269735710772772477, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ef01d84838c5e124cba671d61e5c4562, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

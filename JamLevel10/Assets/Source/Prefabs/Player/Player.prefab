@@ -353,6 +353,51 @@ Transform:
   - {fileID: 3291654378456301963}
   m_Father: {fileID: 984083192181227455}
   m_LocalEulerAnglesHint: {x: 23.493324, y: -20.655703, z: 0.7456793}
+--- !u!1 &2764646562191608433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2427837082095259437}
+  - component: {fileID: 5413457444656173514}
+  m_Layer: 0
+  m_Name: Health
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2427837082095259437
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764646562191608433}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6407141933944773570}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5413457444656173514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764646562191608433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d2b19c29019e049820ec90bb2244e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  CurrentHP: 0
 --- !u!1 &2849889128573618765
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,6 +638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovment
   _moveSpeed: 8
+  _dashSpeed: 15
   _smoothTime: 0.15
   _minX: -12
   _maxX: 12
@@ -1000,9 +1046,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVisual
   _maxTilt: 20
   _tiltDuration: 0.15
+  _animator: {fileID: 4494497843065553100}
   _renderer: {fileID: 6784454523442578492}
   _mainMaterial: {fileID: 2100000, guid: 1b04bece162224c46b1e759e82005305, type: 2}
   _takeDamageMaterial: {fileID: 2100000, guid: e854fc8a5a8eb3d4991d96897732af19, type: 2}
+  _inviseFrameMaterial: {fileID: 2100000, guid: 492302bb2aa050740b0324703e94111b, type: 2}
+  _deadEffectPrefab: {fileID: 2242244112360301053, guid: 3c6e07ddcaef3f042a6d6b7bbb53fe56, type: 3}
 --- !u!1 &6711258672191234343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,6 +1276,7 @@ Transform:
   - {fileID: 427156465792007309}
   - {fileID: 2637355930110099572}
   - {fileID: 8241912451543445533}
+  - {fileID: 2427837082095259437}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &6378812304105560043
@@ -1241,6 +1291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8eb06e06d0affa43a54ac90a25b67b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  _dashTime: 2
 --- !u!136 &1049582466332737578
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1617,7 +1668,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   _bulletPrefab: {fileID: 624035781166091894, guid: 45550a35f585df340a247b86d4c1f871, type: 3}
-  _fireRate: 0.5
+  _fireRate: 0.4
 --- !u!1 &9170351812216292774
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ public class PlayerMovment : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float _moveSpeed = 8f;
+    [SerializeField] private float _dashSpeed = 15f;
     [SerializeField] private float _smoothTime = 0.15f;
     [Header("Screen Bounds")]
     [SerializeField] private float _minX = -8f;
@@ -16,11 +17,13 @@ public class PlayerMovment : MonoBehaviour
     private Vector2 _moveDirection;
     private Vector2 _velocity;
     private Vector2 _currentVelocity;
+    private float _currentSpeed;
 
     public void Initialize(Player player, PlayerInputHandler inputHandler)
     {
         _player = player;
         _inputHandler = inputHandler;
+        _currentSpeed = _moveSpeed;
 
         SubscribeToEvents();
     }
@@ -36,7 +39,7 @@ public class PlayerMovment : MonoBehaviour
     private void Move()
     {
         Vector2 targetVelocity =
-        _moveDirection * _moveSpeed;
+        _moveDirection * _currentSpeed;
 
         _currentVelocity = Vector2.SmoothDamp(
             _currentVelocity,
@@ -58,6 +61,16 @@ public class PlayerMovment : MonoBehaviour
         position.y = Mathf.Clamp(position.y, _minY, _maxY);
 
         _player.transform.position = position;
+    }
+
+    public void SetDashSpeed()
+    {
+        _currentSpeed = _dashSpeed;
+    }
+
+    public void SetNormalSpeed()
+    {
+        _currentSpeed = _moveSpeed;
     }
 
     #region >>> INPUT

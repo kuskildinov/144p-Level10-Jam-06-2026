@@ -13,24 +13,4 @@ MonoBehaviour:
   m_Name: Data
   m_EditorClassIdentifier: Assembly-CSharp::SpawnEnemyData
   Responce:
-    Enemies:
-    - Type: 0
-      SpawnPointIndex: 1
-      WaitTime: 0
-      Loot: 2
-    - Type: 0
-      SpawnPointIndex: 0
-      WaitTime: 0.2
-      Loot: 0
-    - Type: 0
-      SpawnPointIndex: 2
-      WaitTime: 0
-      Loot: 0
-    - Type: 0
-      SpawnPointIndex: 3
-      WaitTime: 0.2
-      Loot: 0
-    - Type: 1
-      SpawnPointIndex: 3
-      WaitTime: 0
-      Loot: 2
+    Enemies: []

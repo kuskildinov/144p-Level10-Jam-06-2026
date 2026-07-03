@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemiesRoot : CompositeRoot
 {
     [SerializeField] private SpawnEnemyData _testData;
-
+    [SerializeField] private Boss _boss;
     private EnemiesSpawner _spawner;
 
     private List<Enemy> _enemysOnLevel;
@@ -18,6 +18,8 @@ public class EnemiesRoot : CompositeRoot
     {
         _enemysOnLevel = new List<Enemy>();
 
+        if (_boss != null)
+            _boss.Initialzie();
         InitializeSpawner();
     }
 
@@ -37,6 +39,9 @@ public class EnemiesRoot : CompositeRoot
 
     public void StartSpawnWay(EnemiesWave wave)
     {
+        if (wave == null || wave.Enemies == null || wave.Enemies.Count <= 0)
+            return;
+
         _currentWave = wave;
         _index = 0;
         SpawnEnemy(_currentWave.Enemies[_index]);
@@ -76,8 +81,7 @@ public class EnemiesRoot : CompositeRoot
     }
 
     public void OnEnemyDead(Enemy enemy)
-    {
-        Debug.Log(enemy.gameObject.name);
+    {      
         _enemysOnLevel.Remove(enemy);
         Destroy(enemy.gameObject);
         CheckAllEnemiesDead();
