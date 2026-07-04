@@ -77,7 +77,7 @@ public abstract class Enemy : MonoBehaviour
         if(other.gameObject.TryGetComponent<PlayerBullet>(out PlayerBullet bullet))
         {
             TakeDamage(GlobalVars.CurrentPlayerDamage);
-            Destroy(bullet.gameObject);
+            bullet.ContactEnemy();
         }
 
         if (other.gameObject.TryGetComponent<Player>(out Player player))

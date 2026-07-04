@@ -35,16 +35,19 @@ public class MainMenuPanel : MonoBehaviour
 
     private void OnNewGameButtonClicked()
     {
+        SoundsRoot.Instance.PlayClickSound();
         _root.OnNewGameButtonClicked();
     }
 
     private void OnContinueGameButtonClicked()
     {
+        SoundsRoot.Instance.PlayClickSound();
         _root.OnContinueGameButtonClicked();
     }
 
     private void OnExitGameButtonClicked()
     {
+        SoundsRoot.Instance.PlayClickSound();
         _root.OnExitGameButtonClicked();
     }
 

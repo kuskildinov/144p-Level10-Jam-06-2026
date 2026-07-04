@@ -114,6 +114,7 @@ public class Player : MonoBehaviour
 
     public void TakeHealth()
     {
+        SoundsRoot.Instance.PlayTakeHpSound();
         _health.OnHealthTaked();
         _root.UpdateHealthPanel();
     }
@@ -138,6 +139,7 @@ public class Player : MonoBehaviour
 
     private void TakeCristal()
     {
+        SoundsRoot.Instance.PlayTakeExpSound();
         _root.OnCristalTaked();
     }
 

@@ -20,6 +20,8 @@ public class PlayerRoot : CompositeRoot
         UpdateHealthPanel();
         ResetAbilities();
         SubscribeToEvents();
+
+        GlobalVars.Level = 1;
     }
 
     private void GetOtherLinks()
@@ -47,6 +49,7 @@ public class PlayerRoot : CompositeRoot
 
     public void OnPlayerDead()
     {
+        SoundsRoot.Instance.PlayDeadSound();
         Destroy(_player.gameObject);
        _levelRoot.OnPlayerDead();
     }
@@ -68,7 +71,10 @@ public class PlayerRoot : CompositeRoot
         int maxCount = GlobalVars.CurrentMaxCristalCount;
         if(currentCount >= maxCount)
         {
+            SoundsRoot.Instance.PlayLevelUpSound();
             _levelRoot.OpenAbilityPanel();
+            GlobalVars.Level++;
+            _levelRoot.OnLevelChanged();
         }
     }
 

@@ -9,8 +9,13 @@ public class LevelRoot : CompositeRoot
     private GameOverPanel _gameOverPanel;
     private BlackFade _blackFade;
     private DialogsRoot _dialogsRoot;
-    private ILevelFlow _currentFlow;
-    
+    [Header("Levels")]
+    [SerializeField] private Level_1_Flow _Level_1_Flow;
+    [SerializeField] private Level_2_Flow _Level_2_Flow;
+    [SerializeField] private Level_3_Flow _Level_3_Flow;
+    [SerializeField] private Level_bossFlow _Level_boss_Flow;
+
+    private ILevelFlow _currentLevelFlow;
 
     public override void Compose()
     {
@@ -102,6 +107,12 @@ public class LevelRoot : CompositeRoot
         _finalCutScene.Initialize(this);
     }
 
+    public void StartEndCutScene()
+    {
+        _finalCutScene.StartCutScene();
+    }
+
+
     public void TryEndCutScene()
     {
 
@@ -110,13 +121,54 @@ public class LevelRoot : CompositeRoot
     #endregion
     #region >>> GAME FLOW
 
-    private void InitializeGameFlow()
+    public void OnLevelChanged()
     {
-        _currentFlow = GetComponent<ILevelFlow>();
-        if (_currentFlow == null) { Debug.Log("Error: Cant find ILevelFlow on scene");return; }
-        _currentFlow.Initialzie(this);
+        if(GlobalVars.Level == 3)
+        {
+            Debug.Log("переход на уровень 2");
+            MoveToLevel_2();
+        }
+        else if(GlobalVars.Level == 4)
+        {
+            Debug.Log("переход на уровень 3");
+            MoveToLevel_3();
+        }
+        else if (GlobalVars.Level == 5)
+        {
+            Debug.Log("переход на уровень босс");
+            MoveToLevel_boss();
+        }
     }
 
+    private void InitializeGameFlow()
+    {
+        _currentLevelFlow = _Level_1_Flow;
+        _currentLevelFlow.Initialzie(this);
+    }
+
+    public void MoveToLevel_2()
+    {
+        _Level_1_Flow.enabled = false;
+
+        _currentLevelFlow = _Level_2_Flow;
+        _currentLevelFlow.Initialzie(this);
+    }
+
+    public void MoveToLevel_3()
+    {
+        _Level_2_Flow.enabled = false;
+
+        _currentLevelFlow = _Level_3_Flow;
+        _currentLevelFlow.Initialzie(this);
+    }
+
+    public void MoveToLevel_boss()
+    {
+        _Level_3_Flow.enabled = false;
+
+        _currentLevelFlow = _Level_boss_Flow;
+        _currentLevelFlow.Initialzie(this);
+    }
 
     #endregion
     #region >>> ABILITY PANEL
@@ -127,4 +179,9 @@ public class LevelRoot : CompositeRoot
     }
 
     #endregion
+
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene(1);
+    }
 }

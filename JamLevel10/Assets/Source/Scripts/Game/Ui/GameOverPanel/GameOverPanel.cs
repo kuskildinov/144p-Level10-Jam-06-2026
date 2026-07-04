@@ -45,11 +45,13 @@ public class GameOverPanel : MonoBehaviour
     private void OnRestartButtonClicked()
     {
         _root.OnRestartButtonClicked();
+        SoundsRoot.Instance.PlayClickSound();
     }
 
     private void OnBackToMenuButtonClicked()
     {
         _root.OnBackToMenuButtonClicked();
+        SoundsRoot.Instance.PlayClickSound();
     }
 
     #endregion

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UpgradePanel : MonoBehaviour
 {
-    [SerializeField] private UpgradeRoot upgradeSystem;
+    [SerializeField] private UpgradeRoot _root;
     [SerializeField] private Player player;
     [SerializeField] private AbilityIcon[] buttons;
     [Header("Anim")]
@@ -15,7 +15,7 @@ public class UpgradePanel : MonoBehaviour
     {
         _panel.gameObject.SetActive(true);
 
-        var upgrades = upgradeSystem.GetRandomUpgrades(3);
+        var upgrades = _root.GetRandomUpgrades(3);
 
         for (int i = 0; i < buttons.Length; i++)
         {
@@ -37,6 +37,7 @@ public class UpgradePanel : MonoBehaviour
 
     public void SelectUpgrade(Upgrade upgrade)
     {
+        SoundsRoot.Instance.PlayClickSound();
         player.ApplyUpgrade(upgrade);
 
         Close();
@@ -52,6 +53,7 @@ public class UpgradePanel : MonoBehaviour
             {
                 _panel.gameObject.SetActive(false);
                 Time.timeScale = 1f;
+                _root.OnPanelClosed();
             });
     }
 }

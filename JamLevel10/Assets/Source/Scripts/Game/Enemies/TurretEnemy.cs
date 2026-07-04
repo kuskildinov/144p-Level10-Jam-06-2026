@@ -12,6 +12,10 @@ public class TurretEnemy : Enemy
     [SerializeField] private float fireRate = 1f;
     [Header("Visual")]
     [SerializeField] private Animator _animator;
+    [Header("Sounds")]
+    [SerializeField] protected AudioSource _source;
+    [SerializeField] private AudioClip _attackSound;
+    [SerializeField] private AudioClip _dieSound;
 
     private float _nextShotTime;
 
@@ -75,6 +79,7 @@ public class TurretEnemy : Enemy
             (player.transform.position -
              firePoint.position).normalized;
 
+        PlayAttackSound();
         EnemyBullet bullet =
             Instantiate(
                 bulletPrefab,
@@ -83,4 +88,24 @@ public class TurretEnemy : Enemy
 
         bullet.Initialize(direction);
     }
+
+    protected override void Die()
+    {
+        base.Die();
+        PlayDieSound();
+    }
+
+    #region >>> SOUNDS
+
+    private void PlayAttackSound()
+    {
+        _source.PlayOneShot(_attackSound);
+    }
+
+    private void PlayDieSound()
+    {
+        _source.PlayOneShot(_dieSound);
+    }
+
+    #endregion
 }

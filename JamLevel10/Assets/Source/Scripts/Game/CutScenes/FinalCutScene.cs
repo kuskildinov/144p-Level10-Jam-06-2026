@@ -12,6 +12,8 @@ public class FinalCutScene : MonoBehaviour
     [SerializeField] private GameObject _queen;
     [Header("UI")]
     [SerializeField] private GameObject _pressFPanel;
+    [SerializeField] private GameObject _finalPanel;
+    [SerializeField] private CanvasVideoPlayer _videoPlayer;
 
     private LevelRoot _root;
     private Player _player;
@@ -26,13 +28,14 @@ public class FinalCutScene : MonoBehaviour
     {
         _root = root;
         _queen.transform.position = _queenSpawnPoint.position;
+        _videoPlayer.Initialize(this);
         _queen.SetActive(false);
         TogglePressFPanel(false);
         GetOtherLinks();
         SubscribeToEvents();
     }
 
-    private void Start()
+    public void StartCutScene()
     {
         StartCoroutine(StartCutSceneRoutine());
     }
@@ -94,11 +97,6 @@ public class FinalCutScene : MonoBehaviour
         TogglePressFPanel(true);
     }
 
-    private IEnumerator EndLevelRoutine()
-    {
-        yield return new WaitForSecondsRealtime(0.1f);
-    }
-
     #region >>> EVENTS
 
     private void SubscribeToEvents()
@@ -116,7 +114,13 @@ public class FinalCutScene : MonoBehaviour
         if (!_cutSceneActive)
             return;
         TogglePressFPanel(false);
-        StartCoroutine(EndLevelRoutine());
+        _finalPanel.gameObject.SetActive(true);
+        _videoPlayer.Play();
+    }
+
+    public void OnVideoEnd()
+    {
+        _root.BackToMainMenu();
     }
 
     #endregion

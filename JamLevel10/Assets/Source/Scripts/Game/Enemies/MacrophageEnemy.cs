@@ -13,6 +13,10 @@ public class MacrophageEnemy : Enemy
     [SerializeField] private float _escapeSpeed = 5f;
     [SerializeField] private float _lootSearchRadius = 5f;
     [SerializeField] private float _lootReactionDelay = 2f;
+    [Header("Sounds")]
+    [SerializeField] protected AudioSource _source;
+    [SerializeField] private AudioClip _takeItemSound;
+    [SerializeField] private AudioClip _dieSound;
 
     private Loot _targetLoot;
     private Loot _carriedLoot;
@@ -142,6 +146,7 @@ public class MacrophageEnemy : Enemy
 
         _targetLoot.gameObject.SetActive(false);
 
+        PlayTakeItemSound();
         FaceRight();
 
         _state = State.Escape;
@@ -176,6 +181,21 @@ public class MacrophageEnemy : Enemy
             _carriedLoot.IsBusy = false;
         }
 
+        PlayDieSound();
         base.Die();
     }
+
+    #region >>> SOUNDS
+
+    private void PlayTakeItemSound()
+    {       
+        _source.PlayOneShot(_takeItemSound);
+    }
+
+    private void PlayDieSound()
+    {
+        _source.PlayOneShot(_dieSound);
+    }
+
+    #endregion
 }

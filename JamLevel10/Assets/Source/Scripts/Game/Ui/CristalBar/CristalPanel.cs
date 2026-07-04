@@ -7,6 +7,7 @@ public class CristalPanel : MonoBehaviour
     
     public void UpdateCristalCount()
     {
+        SetMaxCristalCount();
         _slider.value = GlobalVars.CristalCount;
     }
 

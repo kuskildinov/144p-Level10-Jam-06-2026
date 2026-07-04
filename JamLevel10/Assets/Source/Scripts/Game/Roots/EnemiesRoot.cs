@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemiesRoot : CompositeRoot
-{    
-    [SerializeField] private Boss _boss;
+{ 
     private EnemiesSpawner _spawner;
     private PlayerRoot _playerRoot;
     private List<Enemy> _enemysOnLevel;
@@ -21,9 +20,7 @@ public class EnemiesRoot : CompositeRoot
     public override void Compose()
     {
         _enemysOnLevel = new List<Enemy>();
-
-        if (_boss != null)
-            _boss.Initialzie();
+               
         InitializeSpawner();
         GetOtherLinks();
     }

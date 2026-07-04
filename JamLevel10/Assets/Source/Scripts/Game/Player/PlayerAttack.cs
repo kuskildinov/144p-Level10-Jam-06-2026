@@ -45,6 +45,7 @@ public class PlayerAttack : MonoBehaviour
             return;
 
         _nextFireTime = Time.time + GlobalVars.CurrentPlayerFiraRate;
+        SoundsRoot.Instance.PlayAttackSound();
 
         if (bulletCount <= 1)
         {

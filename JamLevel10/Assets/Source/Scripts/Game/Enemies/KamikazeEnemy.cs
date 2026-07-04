@@ -12,6 +12,10 @@ public class KamikazeEnemy : Enemy
     [Header("Attack Settings")]
     [SerializeField] private EnemyBullet _bulletPrefab;
     [SerializeField] private Transform _bulletSpawnPoint;
+    [Header("Sounds")]
+    [SerializeField] protected AudioSource _source;
+    [SerializeField] private AudioClip _attackSound;
+    [SerializeField] private AudioClip _dieSound;
 
     private Vector3 _chargeTarget;
     private Vector3 _chargeDirection;
@@ -103,6 +107,7 @@ public class KamikazeEnemy : Enemy
         _chargeDirection =
             (_chargeTarget - transform.position).normalized;
 
+        PlayAttackSound();
         _state = State.Charge;
     }
 
@@ -122,6 +127,8 @@ public class KamikazeEnemy : Enemy
     protected override void Die()
     {
         Explode();
+        PlayDieSound();
+        SoundsRoot.Instance.PlayExpotionSound();
         base.Die();
     }
 
@@ -151,4 +158,20 @@ public class KamikazeEnemy : Enemy
     {
         SpawnRadialBullets();
     }
+
+    #region >>> SOUNDS
+
+    private void PlayAttackSound()
+    {
+        _source.clip = _attackSound;
+        _source.loop = true;
+        _source.Play();
+    }
+
+    private void PlayDieSound()
+    {        
+        _source.PlayOneShot(_dieSound);
+    }
+
+    #endregion
 }

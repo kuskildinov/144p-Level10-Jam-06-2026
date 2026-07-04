@@ -25,4 +25,13 @@ public class UpgradeRoot : CompositeRoot
 
         return result;
     }
+
+    public void OnPanelClosed()
+    {
+        GlobalVars.CristalCount = 0;
+        GlobalVars.CurrentMaxCristalCount += 3;
+
+        PlayerRoot playerRoot = FindAnyObjectByType<PlayerRoot>();
+        playerRoot.UpdateCristalCount();       
+    }
 }

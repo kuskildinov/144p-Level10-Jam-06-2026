@@ -10,6 +10,7 @@ public class Level_1_Flow : MonoBehaviour, ILevelFlow
 
     private LevelRoot _root;
     private EnemiesRoot _enemiesRoot;
+    private Coroutine _flowCoroutine;
 
     public void Initialzie(LevelRoot root)
     {
@@ -22,11 +23,15 @@ public class Level_1_Flow : MonoBehaviour, ILevelFlow
     {
         if(GlobalVars.NeedSkipTips)
         {
-            StartCoroutine(StartFlow());
+            if (_flowCoroutine != null)
+                StopCoroutine(_flowCoroutine);
+            _flowCoroutine = StartCoroutine(StartFlow());
         }
         else
         {
-            StartCoroutine(StartTipsFlow());
+            if (_flowCoroutine != null)
+                StopCoroutine(_flowCoroutine);
+            _flowCoroutine = StartCoroutine(StartTipsFlow());
         }       
     }
 
@@ -73,8 +78,15 @@ public class Level_1_Flow : MonoBehaviour, ILevelFlow
         _enemiesRoot.StartSpawnWay(_enemysData[3].Responce);
         yield return new WaitUntil(() => _enemiesRoot.WaveCompleted);
 
-        StartCoroutine(StartFlow());
+        if (_flowCoroutine != null)
+            StopCoroutine(_flowCoroutine);
+        _flowCoroutine = StartCoroutine(StartFlow());
 
         yield break;
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(_flowCoroutine);
     }
 }

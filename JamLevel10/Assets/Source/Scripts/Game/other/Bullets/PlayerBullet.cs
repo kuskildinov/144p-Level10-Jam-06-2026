@@ -26,13 +26,18 @@ public class PlayerBullet : MonoBehaviour
         transform.position += _direction * _speed * Time.deltaTime;
     }
 
+    public void ContactEnemy()
+    {
+        _health--;
+        if (_health <= 0)
+            Destroy(gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.TryGetComponent<BulletWall>(out BulletWall wall))
         {
-            _health--;
-            if(_health <= 0)
-                Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
-    [SerializeField] private float _idleTime = 3f;
-    [SerializeField] private float _health = 100;
+    [SerializeField] private float _idleTime = 5f;
+    [SerializeField] private float _health = 80f;
     [Header("Visual")]
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private Material _mainMaterial;
@@ -12,6 +12,7 @@ public class Boss : MonoBehaviour
     [Header("Dead Effect")]
     [SerializeField] private DeadEffect _deadEffectPrefab;
 
+    private Level_bossFlow _flow;
     private Player _player;
     private BossHand _hand;
     private BossGunAttack _gunAttack;
@@ -19,17 +20,20 @@ public class Boss : MonoBehaviour
     private BossLaserAttack _laserAttack;
 
     private bool _isDead;
+    private int _attackIndex;
     private Coroutine _attackRoutine;
     private Coroutine _takeDamageCoroutine;
 
     public Player Player => _player;
 
-    public void Initialzie()
+    public void Initialzie(Level_bossFlow flow)
     {
+        _flow = flow;
+
         GetOtherLinks();
         InitializeHand();
         InitializeAttacks();
-
+        _attackIndex = 0;
         _attackRoutine = StartCoroutine(BossLoop());
     }
 
@@ -71,30 +75,37 @@ public class Boss : MonoBehaviour
 
     private IEnumerator BossLoop()
     {
+        if (_attackIndex > 2)
+            _attackIndex = 0;
+
         while (true)
         {            
-            yield return new WaitForSeconds(_idleTime);
-
-            int attack = Random.Range(0, 3);
-
-            switch (attack)
+            switch (_attackIndex)
             {
                 case 0:
+                    _flow.ShowBoss();
+                    yield return new WaitForSeconds(_idleTime);
                     yield return _gunAttack.Execute();
+                    _attackIndex++;
                     break;
 
                 case 1:
+                    _flow.HideBoss();
+                    yield return new WaitForSeconds(_idleTime);
                     yield return _wallAttack.Execute();
+                    _attackIndex++;
                     break;
 
                 case 2:
-                    
-                    yield return _laserAttack.Execute();
+                    _flow.ShowBoss();
+                    yield return new WaitForSeconds(_idleTime);
+                    yield return _laserAttack.Execute();                   
                     ToggleLookAtPlayer(true);
+                    _attackIndex++;
                     break;
             }
         }
-
+       
     }
     #endregion
     #region >>> DAMAGE
@@ -157,8 +168,8 @@ public class Boss : MonoBehaviour
             _renderer.materials = mats;
         }
         Instantiate(_deadEffectPrefab,transform.position,Quaternion.identity);
-        Destroy(this.gameObject);
-        //_root.OnBossDead(this);
+        _flow.OnBossDead();
+        Destroy(this.gameObject);        
     }
 
     #endregion
@@ -168,7 +179,7 @@ public class Boss : MonoBehaviour
         if (other.gameObject.TryGetComponent<PlayerBullet>(out PlayerBullet bullet))
         {
             TakeDamage(GlobalVars.CurrentPlayerDamage);
-            Destroy(bullet.gameObject);
+            bullet.ContactEnemy();
         }
 
         if (other.gameObject.TryGetComponent<Player>(out Player player))
