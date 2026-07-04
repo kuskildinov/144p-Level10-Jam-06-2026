@@ -87,6 +87,7 @@ public class Level_1_Flow : MonoBehaviour, ILevelFlow
 
     private void OnDisable()
     {
-        StopCoroutine(_flowCoroutine);
+        if (_flowCoroutine != null)
+            StopCoroutine(_flowCoroutine);
     }
 }

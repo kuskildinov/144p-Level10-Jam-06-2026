@@ -158,7 +158,7 @@ public class PlayerRoot : CompositeRoot
                 }
             case UpgradeType.FireRate:
                 {
-                    GlobalVars.CurrentPlayerFiraRate += 0.05f;
+                    GlobalVars.CurrentPlayerFiraRate -= 0.05f;
                     break;
                 }
             case UpgradeType.BulletCount:
@@ -168,7 +168,7 @@ public class PlayerRoot : CompositeRoot
                 }
             case UpgradeType.BulletSize:
                 {
-                    GlobalVars.CurrentPlayerBulletSize += 0.1f;
+                    GlobalVars.CurrentPlayerBulletSize += 1f;
                     break;
                 }
             case UpgradeType.ThropwForce:

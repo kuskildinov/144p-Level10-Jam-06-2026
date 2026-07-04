@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class LevelRoot : CompositeRoot
 {
     [SerializeField] private FinalCutScene _finalCutScene;
+    [SerializeField] private string _finalCutSceneName;
     [SerializeField] private UpgradePanel _upgradePanel;
     private GameOverPanel _gameOverPanel;
     private BlackFade _blackFade;
@@ -115,7 +116,7 @@ public class LevelRoot : CompositeRoot
 
     public void TryEndCutScene()
     {
-
+        SceneManager.LoadScene(_finalCutSceneName);
     }
 
     #endregion
@@ -123,17 +124,17 @@ public class LevelRoot : CompositeRoot
 
     public void OnLevelChanged()
     {
-        if(GlobalVars.Level == 3)
+        if(GlobalVars.Level == 3) //3
         {
             Debug.Log("переход на уровень 2");
             MoveToLevel_2();
         }
-        else if(GlobalVars.Level == 4)
+        else if(GlobalVars.Level == 4) //4
         {
             Debug.Log("переход на уровень 3");
             MoveToLevel_3();
         }
-        else if (GlobalVars.Level == 5)
+        else if (GlobalVars.Level == 5) //5
         {
             Debug.Log("переход на уровень босс");
             MoveToLevel_boss();

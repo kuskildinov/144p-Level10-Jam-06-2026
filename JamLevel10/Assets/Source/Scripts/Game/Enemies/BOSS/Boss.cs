@@ -75,6 +75,8 @@ public class Boss : MonoBehaviour
 
     private IEnumerator BossLoop()
     {
+        yield return new WaitForSeconds(_idleTime);
+
         if (_attackIndex > 2)
             _attackIndex = 0;
 
@@ -83,29 +85,25 @@ public class Boss : MonoBehaviour
             switch (_attackIndex)
             {
                 case 0:
-                    _flow.ShowBoss();
-                    yield return new WaitForSeconds(_idleTime);
+                    _flow.ShowBoss();                   
                     yield return _gunAttack.Execute();
                     _attackIndex++;
                     break;
 
                 case 1:
-                    _flow.HideBoss();
-                    yield return new WaitForSeconds(_idleTime);
+                    _flow.HideBoss();                   
                     yield return _wallAttack.Execute();
                     _attackIndex++;
                     break;
 
                 case 2:
-                    _flow.ShowBoss();
-                    yield return new WaitForSeconds(_idleTime);
+                    _flow.ShowBoss();                   
                     yield return _laserAttack.Execute();                   
                     ToggleLookAtPlayer(true);
                     _attackIndex++;
                     break;
             }
-        }
-       
+        }       
     }
     #endregion
     #region >>> DAMAGE
@@ -128,8 +126,14 @@ public class Boss : MonoBehaviour
 
     protected void Die()
     {
+        if (_isDead) return;
+
         _isDead = true;
-        StopCoroutine(_attackRoutine);
+
+        StopAllCoroutines();
+
+        _attackRoutine = null;
+
         StartCoroutine(DeadRoutine());
     }
 

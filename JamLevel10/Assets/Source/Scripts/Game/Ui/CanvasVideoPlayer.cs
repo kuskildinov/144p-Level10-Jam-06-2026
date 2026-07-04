@@ -1,41 +1,49 @@
-using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
 public class CanvasVideoPlayer : MonoBehaviour
 {
     [SerializeField] private VideoPlayer videoPlayer;
 
-    private FinalCutScene _cutScene;
+    private bool _started;
 
-    public void Initialize(FinalCutScene cutScene)
+    private void Start()
     {
-        _cutScene = cutScene;
+        videoPlayer.playOnAwake = false;
+        videoPlayer.waitForFirstFrame = true;
+
+        videoPlayer.prepareCompleted += OnPrepared;
+        videoPlayer.errorReceived += OnError;
         videoPlayer.loopPointReached += OnVideoFinished;
+
+        videoPlayer.Prepare();
     }
 
-    private void OnDestroy()
+    private void OnPrepared(VideoPlayer vp)
     {
-        videoPlayer.loopPointReached -= OnVideoFinished;
+        Debug.Log("VIDEO PREPARED");
+
+        if (_started) return;
+
+        _started = true;
+        vp.Play();
     }
 
-    public void Play()
+    private void OnError(VideoPlayer vp, string message)
     {
-        videoPlayer.Play();
-    }
-
-    public void Stop()
-    {
-        videoPlayer.Stop();
-    }
-
-    public void Pause()
-    {
-        videoPlayer.Pause();
+        Debug.LogError("VIDEO ERROR: " + message);
     }
 
     private void OnVideoFinished(VideoPlayer source)
     {
-        _cutScene.OnVideoEnd();
+        SceneManager.LoadScene(1);
+    }
+
+    private void OnDestroy()
+    {
+        videoPlayer.prepareCompleted -= OnPrepared;
+        videoPlayer.loopPointReached -= OnVideoFinished;
+        videoPlayer.errorReceived -= OnError;
     }
 }

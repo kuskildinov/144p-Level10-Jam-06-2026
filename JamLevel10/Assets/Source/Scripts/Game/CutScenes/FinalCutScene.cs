@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FinalCutScene : MonoBehaviour
 {
+   
     [Header("Player")]
     [SerializeField] private Transform _playerStandPoint;
     [Header("Queen")]
@@ -12,8 +13,6 @@ public class FinalCutScene : MonoBehaviour
     [SerializeField] private GameObject _queen;
     [Header("UI")]
     [SerializeField] private GameObject _pressFPanel;
-    [SerializeField] private GameObject _finalPanel;
-    [SerializeField] private CanvasVideoPlayer _videoPlayer;
 
     private LevelRoot _root;
     private Player _player;
@@ -27,8 +26,7 @@ public class FinalCutScene : MonoBehaviour
     public void Initialize(LevelRoot root)
     {
         _root = root;
-        _queen.transform.position = _queenSpawnPoint.position;
-        _videoPlayer.Initialize(this);
+        _queen.transform.position = _queenSpawnPoint.position;       
         _queen.SetActive(false);
         TogglePressFPanel(false);
         GetOtherLinks();
@@ -114,19 +112,15 @@ public class FinalCutScene : MonoBehaviour
         if (!_cutSceneActive)
             return;
         TogglePressFPanel(false);
-        _finalPanel.gameObject.SetActive(true);
-        _videoPlayer.Play();
+        _root.TryEndCutScene();
     }
-
-    public void OnVideoEnd()
-    {
-        _root.BackToMainMenu();
-    }
-
     #endregion
 
     private void OnDestroy()
     {
         UnsubscribeToEvents();
+
+        _playerMoveTween?.Kill();
+        _queenMoveTween?.Kill();
     }
 }

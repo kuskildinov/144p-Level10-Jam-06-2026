@@ -3,7 +3,7 @@ using UnityEngine;
 public static class GlobalVars
 {
     public static int CristalCount = 0;
-    public static int CurrentMaxCristalCount = 1;
+    public static int CurrentMaxCristalCount = 5;
     public static bool NeedSkipTips = true;
     [Header("Abilities")]
     public static float StartPlayerDamage = 1;

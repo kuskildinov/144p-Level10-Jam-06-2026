@@ -52,6 +52,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeadEffect(Boss)
       objectReference: {fileID: 0}
+    - target: {fileID: 6436011666649855030, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436011666649855030, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7269735710772772477, guid: 005ad92b4adc5df4ebb31a81fc2b4cc4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

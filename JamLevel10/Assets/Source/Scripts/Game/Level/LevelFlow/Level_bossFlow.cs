@@ -76,11 +76,11 @@ public class Level_bossFlow : MonoBehaviour,ILevelFlow
 
     public IEnumerator StartFlow()
     {
-        SoundsRoot.Instance.StartBossSound();
+        //SoundsRoot.Instance.StartBossSound();
         ShowBoss();
         _boss.Initialzie(this);
         ShowDialogByIndex(7);
-         yield return new WaitForSecondsRealtime(5f);
+        yield return null;
     }
 
     private void OnDisable()
