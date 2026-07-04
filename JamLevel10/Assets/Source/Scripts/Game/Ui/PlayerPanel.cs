@@ -17,6 +17,12 @@ public class PlayerPanel : MonoBehaviour
         _healthPanel.UpdateHealthCount(healthCount);
     }
 
+    public void ToggleVisibility(bool value)
+    {
+        _healthPanel.gameObject.SetActive(value);
+        _cristalPanel.gameObject.SetActive(value);
+    }
+
     public void UpdateCristalCount()
     {
         _cristalPanel.UpdateCristalCount();

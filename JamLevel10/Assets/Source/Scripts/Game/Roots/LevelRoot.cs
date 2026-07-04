@@ -1,20 +1,25 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelRoot : CompositeRoot
-{    
+{
+    [SerializeField] private FinalCutScene _finalCutScene;
+    [SerializeField] private UpgradePanel _upgradePanel;
     private GameOverPanel _gameOverPanel;
     private BlackFade _blackFade;
     private DialogsRoot _dialogsRoot;
+    private ILevelFlow _currentFlow;
+    
 
     public override void Compose()
     {
         InitializeGameOverPanel();
+        InitializeFinalCutScene();
+        InitializeGameFlow();
         GetOtherLinks();
 
         HideBlackFade();
-        //TEST
-        Time.timeScale = 1f;
     }
 
     #region >>> other links
@@ -31,12 +36,12 @@ public class LevelRoot : CompositeRoot
     #endregion
     #region >>> DIALOGS
 
-    private void ShowDialogByIndex(int index, Action onComplete)
+    public void ShowDialogByIndex(int index, Action onComplete)
     {
         _dialogsRoot.TryStartDialog(index, onComplete);
     }
 
-    private void HideDialog()
+    public void HideDialog()
     {
         _dialogsRoot.EndDialog();
     }
@@ -65,9 +70,7 @@ public class LevelRoot : CompositeRoot
     }
 
     public void OnPlayerDead()
-    {
-        //TEST
-        Time.timeScale = 0f;
+    {       
         ShowGameOverPanel();
     }
 
@@ -79,12 +82,48 @@ public class LevelRoot : CompositeRoot
 
     public void OnRestartButtonClicked()
     {
-
+        GlobalVars.NeedSkipTips = true;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void OnBackToMenuButtonClicked()
     {
+        SceneManager.LoadScene(1);
+    }
 
+    #endregion
+    #region >>> FINAL CUT SCENE
+
+    private void InitializeFinalCutScene()
+    {
+        if (_finalCutScene == null)
+            return;
+
+        _finalCutScene.Initialize(this);
+    }
+
+    public void TryEndCutScene()
+    {
+
+    }
+
+    #endregion
+    #region >>> GAME FLOW
+
+    private void InitializeGameFlow()
+    {
+        _currentFlow = GetComponent<ILevelFlow>();
+        if (_currentFlow == null) { Debug.Log("Error: Cant find ILevelFlow on scene");return; }
+        _currentFlow.Initialzie(this);
+    }
+
+
+    #endregion
+    #region >>> ABILITY PANEL
+
+    public void OpenAbilityPanel()
+    {
+        _upgradePanel.Open();
     }
 
     #endregion

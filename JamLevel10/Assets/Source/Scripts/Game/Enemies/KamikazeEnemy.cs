@@ -26,9 +26,9 @@ public class KamikazeEnemy : Enemy
 
     private State _state;
 
-    public override void Initialize(EnemiesRoot root, Transform attackPoint, Loot loot)
+    public override void Initialize(EnemiesRoot root, Transform attackPoint)
     {
-        base.Initialize(root, attackPoint, loot);
+        base.Initialize(root, attackPoint);
 
         _attackPosition = attackPoint;
         _state = State.MoveToPosition;
@@ -79,6 +79,9 @@ public class KamikazeEnemy : Enemy
 
         Player player =
             FindAnyObjectByType<Player>();
+
+        if (player == null)
+            return;
 
         _chargeTarget = player.transform.position;
 

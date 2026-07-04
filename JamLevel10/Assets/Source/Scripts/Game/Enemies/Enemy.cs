@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyType _type;
-    [SerializeField] protected int _maxHp = 3;
+    [SerializeField] protected float _maxHp = 3;
     [Header("Bounds")]
     [SerializeField] protected float _leftDestroyX = -15f;
     [SerializeField] protected float _rightDestroyX = 15f;  
@@ -18,21 +18,19 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private DeadEffect _deadEffectPrefab;
 
     protected EnemiesRoot _root;
-    protected int _currentHp;
+    protected float _currentHp;
     protected bool _isDead;
     protected Coroutine _takeDamageCoroutine;
-    protected Loot _currentLootPrefab;
 
     public EnemyType Type => _type;
 
-    public virtual void Initialize(EnemiesRoot root, Transform attackPoint, Loot lootPrefab)
+    public virtual void Initialize(EnemiesRoot root, Transform attackPoint)
     {
         _root = root;
-        _currentHp = _maxHp;
-        _currentLootPrefab = lootPrefab;
+        _currentHp = _maxHp;       
     }
 
-    public virtual void TakeDamage()
+    public virtual void TakeDamage(float value)
     {
         if (_isDead)
             return;
@@ -42,7 +40,7 @@ public abstract class Enemy : MonoBehaviour
             _renderer.materials[0] = _mainMaterial;
         }
         _takeDamageCoroutine =  StartCoroutine(TakeDamageVisualRoutine());
-        _currentHp --;
+        _currentHp -= value;
 
         if (_currentHp <= 0)
             Die();
@@ -51,8 +49,7 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Die()
     {
         _isDead = true;
-        Instantiate(_deadEffectPrefab,transform.position,Quaternion.identity);
-        TrySpawnLoot();
+        Instantiate(_deadEffectPrefab,transform.position,Quaternion.identity);       
         _root.OnEnemyDead(this);       
     }
 
@@ -60,14 +57,7 @@ public abstract class Enemy : MonoBehaviour
     {
         player.TakeDamage();
         Die();
-    }
-
-    private void TrySpawnLoot()
-    {
-        if (_currentLootPrefab == null)
-            return;
-        Instantiate(_currentLootPrefab, transform.position,Quaternion.identity);
-    }
+    }   
 
     protected IEnumerator TakeDamageVisualRoutine()
     {
@@ -86,7 +76,7 @@ public abstract class Enemy : MonoBehaviour
     {
         if(other.gameObject.TryGetComponent<PlayerBullet>(out PlayerBullet bullet))
         {
-            TakeDamage();
+            TakeDamage(GlobalVars.CurrentPlayerDamage);
             Destroy(bullet.gameObject);
         }
 

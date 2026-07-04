@@ -62,11 +62,13 @@ public class MainMenuRoot : CompositeRoot
 
     private void TryStartNewGame()
     {
+        GlobalVars.NeedSkipTips = false;
         LoadGameScene();
     }
 
     private void TryContinueGame()
     {
+        GlobalVars.NeedSkipTips = true;
         LoadGameScene();
     }
 

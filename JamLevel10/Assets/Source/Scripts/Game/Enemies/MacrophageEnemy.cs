@@ -1,3 +1,4 @@
+﻿using System.Collections;
 using UnityEngine;
 
 public class MacrophageEnemy : Enemy
@@ -7,12 +8,16 @@ public class MacrophageEnemy : Enemy
     [SerializeField] private Transform _visual;
     [SerializeField] private Animator _animtor;
     [Header("Movement")]
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float lootSpeed = 5f;
-    [SerializeField] private float lootSearchRadius = 5f;
+    [SerializeField] private float _moveSpeed = 8f;
+    [SerializeField] private float _lootSpeed = 9f;
+    [SerializeField] private float _escapeSpeed = 5f;
+    [SerializeField] private float _lootSearchRadius = 5f;
+    [SerializeField] private float _lootReactionDelay = 2f;
 
     private Loot _targetLoot;
     private Loot _carriedLoot;
+    private float _currentSpeed;
+    private Coroutine _lootDelayRoutine;
 
     private State _state;
 
@@ -23,9 +28,9 @@ public class MacrophageEnemy : Enemy
         Escape
     }
 
-    public override void Initialize(EnemiesRoot root, Transform attackPoint,Loot loot)
+    public override void Initialize(EnemiesRoot root, Transform attackPoint)
     {
-        base.Initialize(root, attackPoint, loot);
+        base.Initialize(root, attackPoint);
 
         _state = State.MoveForward;
         FaceLeft();
@@ -36,23 +41,28 @@ public class MacrophageEnemy : Enemy
         switch (_state)
         {
             case State.MoveForward:
+                _currentSpeed = _moveSpeed;
                 MoveForward();
                 SearchLoot();
                 break;
 
             case State.SeekLoot:
-                MoveToLoot();
-                break;
+                {
+                    MoveToLoot();
+                    break;
+                }
 
             case State.Escape:
+                _currentSpeed = _escapeSpeed;
                 Escape();
                 break;
-        }
+        }       
     }
 
     private void MoveForward()
     {
-        transform.position += Vector3.left * moveSpeed * Time.deltaTime;
+       
+        transform.position += Vector3.left * _currentSpeed * Time.deltaTime;
 
         if (transform.position.x <= _leftDestroyX || transform.position.y <= _bottomDestroyY || transform.position.y >= _topDestroyY)
         {
@@ -62,9 +72,10 @@ public class MacrophageEnemy : Enemy
 
     private void SearchLoot()
     {
-        Collider[] hits = Physics.OverlapSphere(
-            transform.position,
-            lootSearchRadius);
+        if (_lootDelayRoutine != null)
+            return;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, _lootSearchRadius);
 
         foreach (Collider hit in hits)
         {
@@ -73,11 +84,26 @@ public class MacrophageEnemy : Enemy
             if (loot == null || loot.IsBusy)
                 continue;
 
-            _targetLoot = loot;
-            _targetLoot.IsBusy = true;
-            _state = State.SeekLoot;
+            _lootDelayRoutine = StartCoroutine(StartSeekLoot(loot));
             return;
         }
+    }
+
+    private IEnumerator StartSeekLoot(Loot loot)
+    {
+        if (loot == null)
+            yield break;
+
+        if (loot.IsBusy)
+            yield break;
+
+        loot.IsBusy = true;
+        _targetLoot = loot;
+        _state = State.SeekLoot;
+        _currentSpeed = 0f;
+        yield return new WaitForSeconds(_lootReactionDelay);
+        _currentSpeed = _lootSpeed;
+        _lootDelayRoutine = null;
     }
 
     private void MoveToLoot()
@@ -85,15 +111,16 @@ public class MacrophageEnemy : Enemy
         if (_targetLoot == null)
         {
             _state = State.MoveForward;
+            _lootDelayRoutine = null;
             return;
-        }
-
+        }      
+        
         _animtor.SetBool(AnimatorRunParam, true);
 
         transform.position = Vector3.MoveTowards(
             transform.position,
             _targetLoot.transform.position,
-            lootSpeed * Time.deltaTime);
+            _currentSpeed * Time.deltaTime);
                
 
         if (Vector3.Distance(
@@ -122,7 +149,7 @@ public class MacrophageEnemy : Enemy
 
     private void Escape()
     {
-        transform.position += Vector3.right * lootSpeed * Time.deltaTime;
+        transform.position += Vector3.right * _currentSpeed * Time.deltaTime;
 
         if (transform.position.x >= _rightDestroyX)
         {
@@ -138,11 +165,6 @@ public class MacrophageEnemy : Enemy
     private void FaceRight()
     {
         _visual.localRotation = Quaternion.Euler(0f, 180f, 0f);
-    }
-
-    public override void TakeDamage()
-    {
-        base.TakeDamage();
     }
 
     protected override void Die()

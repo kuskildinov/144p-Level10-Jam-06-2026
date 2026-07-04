@@ -2,25 +2,26 @@ using UnityEngine;
 
 public class Cristal : Loot
 {
+
     [SerializeField] private float _magnetRadius = 4f;
     [SerializeField] private float _startSpeed = 3f;
     [SerializeField] private float _acceleration = 12f;
     [SerializeField] private float _collectDistance = 0.2f;
-
+    
     private Transform _player;
     private bool _isMagnetized;
-    private float _currentSpeed;
+    private float _currentSpeed;  
 
     protected override void OnEnable()
     {
         base.OnEnable();
-
-        _player = FindFirstObjectByType<Player>().transform;
-        _currentSpeed = _startSpeed;
+        _player = FindFirstObjectByType<Player>().transform;   
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (_player == null ||_player.gameObject == null)
             return;
 
@@ -43,6 +44,5 @@ public class Cristal : Loot
             transform.position,
             _player.position,
             _currentSpeed * Time.deltaTime);
-               
     }
 }

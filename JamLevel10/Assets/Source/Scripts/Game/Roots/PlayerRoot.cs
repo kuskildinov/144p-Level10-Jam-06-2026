@@ -9,6 +9,8 @@ public class PlayerRoot : CompositeRoot
     private GameStatesRoot _gameStatesRoot;
     private LevelRoot _levelRoot;
 
+    public Player Player => _player;
+
     public override void Compose()
     {
         GetOtherLinks();
@@ -16,6 +18,7 @@ public class PlayerRoot : CompositeRoot
         InitializePlayer();
         InitializePlayerPanel();
         UpdateHealthPanel();
+        ResetAbilities();
         SubscribeToEvents();
     }
 
@@ -53,18 +56,19 @@ public class PlayerRoot : CompositeRoot
 
     public void OnCristalTaked()
     {
-        GlovalVars.CristalCount++;
+        int takedCount = GlobalVars.CurrentPlayerExpMultiply;
+        GlobalVars.CristalCount += takedCount;
         UpdateCristalCount();
         CheckCristalCollectionComplete();
     }
 
     private void CheckCristalCollectionComplete()
     {
-        int currentCount = GlovalVars.CristalCount;
-        int maxCount = GlovalVars.CurrentMaxCristalCount;
+        int currentCount = GlobalVars.CristalCount;
+        int maxCount = GlobalVars.CurrentMaxCristalCount;
         if(currentCount >= maxCount)
         {
-            Debug.Log("Уровень пройден!");
+            _levelRoot.OpenAbilityPanel();
         }
     }
 
@@ -135,7 +139,56 @@ public class PlayerRoot : CompositeRoot
     }
 
     #endregion
+    #region >>> ABILITIES
 
+    public void ApplyUpgrade(Upgrade upgrade)
+    {
+        switch(upgrade.type)
+        {
+            case UpgradeType.Damage:
+                {
+                    GlobalVars.CurrentPlayerDamage += 0.5f;
+                    break;
+                }
+            case UpgradeType.FireRate:
+                {
+                    GlobalVars.CurrentPlayerFiraRate += 0.05f;
+                    break;
+                }
+            case UpgradeType.BulletCount:
+                {
+                    GlobalVars.CurrentPlayerBulletCount++;
+                    break;
+                }
+            case UpgradeType.BulletSize:
+                {
+                    GlobalVars.CurrentPlayerBulletSize += 0.1f;
+                    break;
+                }
+            case UpgradeType.ThropwForce:
+                {
+                    GlobalVars.CurrentPlayerBulletThrow++;
+                    break;
+                }
+            case UpgradeType.Exp:
+                {
+                    GlobalVars.CurrentPlayerExpMultiply ++;
+                    break;
+                }
+        }
+    }
+
+    public void ResetAbilities()
+    {
+        GlobalVars.CurrentPlayerDamage = GlobalVars.StartPlayerDamage;
+        GlobalVars.CurrentPlayerFiraRate = GlobalVars.StartPlayerFiraRate;
+        GlobalVars.CurrentPlayerBulletCount = GlobalVars.StartPlayerBulletCount;
+        GlobalVars.CurrentPlayerBulletSize = GlobalVars.StartPlayerBulletSize;
+        GlobalVars.CurrentPlayerBulletThrow = GlobalVars.StartPlayerBulletThrow;
+        GlobalVars.CurrentPlayerExpMultiply = GlobalVars.StartPlayerExpMultiply;
+    }
+
+    #endregion
     private void OnDestroy()
     {
         UnsubscribeToEvents();

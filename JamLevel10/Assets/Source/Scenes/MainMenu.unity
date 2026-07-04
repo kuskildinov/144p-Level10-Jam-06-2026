@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45eca624eb2e53f4bae7fc3a13e4a065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuRoot
+  _firstLevelSceneName: Level_1
 --- !u!1 &702806068
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,6 +447,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3044912789503430936, guid: 0897ea3bdb607d449bf2c4e339b169eb, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3044912789503430936, guid: 0897ea3bdb607d449bf2c4e339b169eb, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

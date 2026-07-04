@@ -1618,7 +1618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf01434c6868e9469de2cc3dda3972c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossGunAttack
-  _bulletPrefab: {fileID: 5486700536605327342, guid: baf1d5fbaedfd3a41b23f87e47fc6ed5, type: 3}
+  _bulletPrefab: {fileID: 5486700536605327342, guid: a85e0d681a7c3a44b911ba2b39779733, type: 3}
   _firePoint: {fileID: 1786297276926514060}
   _shootDuration: 4
   _fireRate: 0.3

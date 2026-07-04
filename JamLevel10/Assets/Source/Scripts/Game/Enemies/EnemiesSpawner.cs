@@ -20,6 +20,17 @@ public class EnemiesSpawner : MonoBehaviour
     [Header("Loots Prefabs")]
     [SerializeField] private Loot _aidLootPrefab;
     [SerializeField] private Loot _coinLootPrefab;
+    [SerializeField] private Vector2 _minBounds;
+    [SerializeField] private Vector2 _maxBounds;
+    [SerializeField]
+    private float[] _healthDropChance =
+{
+    0.45f, // HP = 0
+    0.45f, // HP = 1
+    0.30f, // HP = 2
+    0.15f, // HP = 3
+    0.00f  // HP = 4
+};
 
     private EnemiesRoot _root;
 
@@ -28,7 +39,7 @@ public class EnemiesSpawner : MonoBehaviour
         _root = root;
     }
 
-    public void SpawnEnemiesByType(EnemyType type, int spawnPointIndex, LootType lootType)
+    public void SpawnEnemiesByType(EnemyType type, int spawnPointIndex)
     {
         Enemy currentEnemyPrefab = null;
         Transform spawnPoint = GetSpawnPointByIndex(spawnPointIndex);
@@ -60,8 +71,7 @@ public class EnemiesSpawner : MonoBehaviour
 
         Transform attackPoint = GetAttackPointByIndex(spawnPointIndex);
         Enemy enemy = Instantiate(currentEnemyPrefab,spawnPoint.position,Quaternion.identity);
-        Loot lootPrefab = GetLootPrefabByType(lootType);
-        enemy.Initialize(_root, attackPoint, lootPrefab);
+        enemy.Initialize(_root, attackPoint);
         _root.OnEnemySpawned(enemy);
     }
 
@@ -135,23 +145,29 @@ public class EnemiesSpawner : MonoBehaviour
         return attackPoint;
     }
 
-    private Loot GetLootPrefabByType(LootType type)
+    public void TrySpawnLoot(Vector3 position)
     {
-        Loot lootPrefab = null;
-        switch (type)
+        if (!IsInsideBounds(position))
+            return;
+
+        int hp = Mathf.Clamp(_root.Player.CurrentHP, 0, _healthDropChance.Length - 1);
+
+        if (Random.value <= _healthDropChance[hp])
         {
-            case LootType.None:
-                lootPrefab = null;
-                break;
-            case LootType.Cristal:
-                lootPrefab = _coinLootPrefab;
-                break;
-            case LootType.Health:
-                lootPrefab = _aidLootPrefab;
-                break;
-            default:
-                break;
+            Instantiate(_aidLootPrefab, position,Quaternion.identity);
         }
-        return lootPrefab;
-    }   
+        else
+        {
+            Instantiate(_coinLootPrefab, position, Quaternion.identity);
+        }
+    }
+
+    private bool IsInsideBounds(Vector3 position)
+    {
+        return position.x >= _minBounds.x &&
+               position.x <= _maxBounds.x &&
+               position.y >= _minBounds.y &&
+               position.y <= _maxBounds.y;
+    }
+
 }

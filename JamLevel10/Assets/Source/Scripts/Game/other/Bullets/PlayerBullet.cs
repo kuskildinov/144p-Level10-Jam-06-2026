@@ -7,6 +7,15 @@ public class PlayerBullet : MonoBehaviour
     [SerializeField] protected float _lifeTime = 5f;
     [SerializeField] protected int _damage = 1;
 
+    private int _health;
+    private Vector3 _direction;
+
+    public void Init(Vector3 direction)
+    {
+        _direction = direction.normalized;
+        _health = GlobalVars.CurrentPlayerBulletThrow;
+    }
+
     private void Start()
     {
         Destroy(gameObject, _lifeTime);
@@ -14,6 +23,16 @@ public class PlayerBullet : MonoBehaviour
 
     private void Update()
     {
-        transform.position += Vector3.right * _speed * Time.deltaTime;
+        transform.position += _direction * _speed * Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.TryGetComponent<BulletWall>(out BulletWall wall))
+        {
+            _health--;
+            if(_health <= 0)
+                Destroy(gameObject);
+        }
     }
 }

@@ -3,13 +3,14 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private PlayerBullet _bulletPrefab;
-    [SerializeField] private float _fireRate = 0.15f;
+    [SerializeField] private float _fireRate = 0.15f;   
 
     private Player _player;
     private PlayerInputHandler _inputHandler;
     private AttackPoint _attackPoint;
-    private float _nextShotTime;
+    private float _nextFireTime;
     private bool _attackPressed;
+    private float _spreadAngle = 30f;
 
     public void Initialize(Player player, PlayerInputHandler inputHandler)
     {
@@ -37,23 +38,52 @@ public class PlayerAttack : MonoBehaviour
     #endregion
     #region >>> ATTACK
 
-    private void Shoot()
+    public void Shoot()
     {
-        if (!_player.IsActive || !_player.IsAlive)
+        int bulletCount = GlobalVars.CurrentPlayerBulletCount;
+        if (Time.time < _nextFireTime)
             return;
 
-        if (Time.time < _nextShotTime)
+        _nextFireTime = Time.time + GlobalVars.CurrentPlayerFiraRate;
+
+        if (bulletCount <= 1)
+        {
+            SpawnBullet(_attackPoint.transform.forward);
             return;
+        }
 
-        _nextShotTime = Time.time + _fireRate;
+        float step = _spreadAngle / (bulletCount - 1);
+        float startAngle = -_spreadAngle / 2f;
 
-        Instantiate(
-            _bulletPrefab,
-            _attackPoint.transform.position,
-            Quaternion.identity);
+        for (int i = 0; i < bulletCount; i++)
+        {
+            float angle = startAngle + step * i;
+
+            Vector3 dir = new Vector3(
+                Mathf.Cos(angle * Mathf.Deg2Rad),
+                Mathf.Sin(angle * Mathf.Deg2Rad),
+                0f
+            );
+
+           
+            SpawnBullet(dir);
+        }
     }
 
-    #endregion
+    private void SpawnBullet(Vector3 direction)
+    {
+        PlayerBullet bullet = Instantiate(
+            _bulletPrefab,
+            _attackPoint.transform.position,
+            Quaternion.identity
+        );
+
+        float scale = GlobalVars.CurrentPlayerBulletSize;
+        bullet.transform.localScale = Vector3.one * (1f + scale);
+        bullet.Init(direction);
+    }
+
+    #endregion    
     #region >>> INPUT
 
     private void OnAttackInputChanged(bool isPressed)

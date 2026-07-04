@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
 
     public void TryDash(bool value)
     {
-        if (_isDash)
+        if (!_isActive || !_isAlive || _isDash )
             return;
 
         StartCoroutine(DashRoutine());
@@ -139,6 +139,14 @@ public class Player : MonoBehaviour
     private void TakeCristal()
     {
         _root.OnCristalTaked();
+    }
+
+    #endregion
+    #region >>> Abilities
+
+    public void ApplyUpgrade(Upgrade upgrade)
+    {
+        _root.ApplyUpgrade(upgrade);
     }
 
     #endregion

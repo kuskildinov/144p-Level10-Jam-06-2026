@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7851e5fb204b34f9693a402c6b8ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KamikazeEnemy
+  _type: 0
   _maxHp: 3
   _leftDestroyX: -15
   _rightDestroyX: 15
@@ -441,7 +442,7 @@ MonoBehaviour:
   _waitBeforeCharge: 2
   _commonModel: {fileID: 6204234809087407577}
   _screamModel: {fileID: 5441235851300563560}
-  _bulletPrefab: {fileID: 5486700536605327342, guid: baf1d5fbaedfd3a41b23f87e47fc6ed5, type: 3}
+  _bulletPrefab: {fileID: 5486700536605327342, guid: 6708a6f4d183b3340800dd837c7f701e, type: 3}
   _bulletSpawnPoint: {fileID: 5677092501426546741}
 --- !u!136 &5490168361986864954
 CapsuleCollider:

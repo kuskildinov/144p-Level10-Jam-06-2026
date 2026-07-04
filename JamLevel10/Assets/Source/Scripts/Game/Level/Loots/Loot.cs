@@ -16,8 +16,15 @@ public class Loot : MonoBehaviour
     [Header("Disappear Animation")]
     [SerializeField] private float _disappearDuration = 0.4f;
 
+    [Header("Movement")]
+    [SerializeField] protected float _moveSpeed = 3f;
+    [Header("Movement Area")]
+    [SerializeField] private Vector2 _minBounds = new Vector2(-8,-8);
+    [SerializeField] private Vector2 _maxBounds = new Vector2(8, 8);
+
     protected Sequence _idleSequence;
     protected Vector3 _graphicsStartPos;
+    private Vector3 _currentTarget;
 
     public LootType Type;
     public bool IsBusy;
@@ -26,7 +33,34 @@ public class Loot : MonoBehaviour
     {
         PlaySpawnAnimation();
         StartIdleAnimation();
+        _currentTarget = GetRandomPoint();
         _graphicsStartPos = _visual.localPosition;      
+    }
+
+    protected virtual void Update()
+    {
+        if (_currentTarget == null)
+            return;
+
+        Move();
+
+        if (Vector3.Distance(transform.position, _currentTarget) <= 0.1f)
+        {
+            _currentTarget = GetRandomPoint();
+        }
+    }
+
+    private void Move()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, _currentTarget, _moveSpeed * Time.deltaTime);
+    }
+
+    private Vector3 GetRandomPoint()
+    {
+        return new Vector3(
+            Random.Range(_minBounds.x, _maxBounds.x),
+            Random.Range(_minBounds.y, _maxBounds.y),
+            transform.position.z);
     }
 
     protected virtual void OnDisable()

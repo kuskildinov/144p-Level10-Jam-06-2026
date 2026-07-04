@@ -4,7 +4,7 @@ using UnityEngine;
 public class Boss : MonoBehaviour
 {
     [SerializeField] private float _idleTime = 3f;
-    [SerializeField] private int _health = 100;
+    [SerializeField] private float _health = 100;
     [Header("Visual")]
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private Material _mainMaterial;
@@ -99,7 +99,7 @@ public class Boss : MonoBehaviour
     #endregion
     #region >>> DAMAGE
 
-    public void TakeDamage()
+    public void TakeDamage(float value)
     {
         if (_isDead)
             return;
@@ -109,7 +109,7 @@ public class Boss : MonoBehaviour
             _renderer.materials[0] = _mainMaterial;
         }
         _takeDamageCoroutine = StartCoroutine(TakeDamageVisualRoutine());
-        _health--;
+        _health -= value;
 
         if (_health <= 0)
             Die();
@@ -125,7 +125,6 @@ public class Boss : MonoBehaviour
     protected virtual void OnTouchPlayer(Player player)
     {
         player.TakeDamage();
-        Die();
     }
 
     protected IEnumerator TakeDamageVisualRoutine()
@@ -163,11 +162,12 @@ public class Boss : MonoBehaviour
     }
 
     #endregion
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent<PlayerBullet>(out PlayerBullet bullet))
         {
-            TakeDamage();
+            TakeDamage(GlobalVars.CurrentPlayerDamage);
             Destroy(bullet.gameObject);
         }
 

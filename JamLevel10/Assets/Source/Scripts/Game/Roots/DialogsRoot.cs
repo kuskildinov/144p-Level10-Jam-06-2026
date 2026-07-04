@@ -51,8 +51,7 @@ public class DialogsRoot : CompositeRoot
     }
 
     public void EndDialog()
-    {        
-        _currentLevelPhrases = null;
+    {
         _dialogPanel.Close();         
     }
 

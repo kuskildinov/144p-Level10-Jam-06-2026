@@ -7,11 +7,11 @@ public class CristalPanel : MonoBehaviour
     
     public void UpdateCristalCount()
     {
-        _slider.value = GlovalVars.CristalCount;
+        _slider.value = GlobalVars.CristalCount;
     }
 
     public void SetMaxCristalCount()
     {
-        _slider.maxValue = GlovalVars.CurrentMaxCristalCount;
+        _slider.maxValue = GlobalVars.CurrentMaxCristalCount;
     }
 }

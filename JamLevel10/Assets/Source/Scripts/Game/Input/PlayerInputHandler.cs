@@ -7,6 +7,7 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action<Vector2> MoveInput;
     public event Action<bool> DashInput;
     public event Action<bool> AttackInput;
+    public event Action EndInput;
 
     public void OnMove(InputValue value)
     {
@@ -34,6 +35,14 @@ public class PlayerInputHandler : MonoBehaviour
         else
         {           
             AttackInput?.Invoke(false);
+        }
+    }
+
+    public void OnEnd(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            EndInput?.Invoke();
         }
     }
 }

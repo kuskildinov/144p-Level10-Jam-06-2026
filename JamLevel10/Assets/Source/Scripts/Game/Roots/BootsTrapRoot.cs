@@ -4,13 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class BootsTrapRoot : CompositeRoot
 {
-    [SerializeField] private GameObject _logo;
-
+    [SerializeField] private string _mainMenuSceneName;
     private BlackFade _blackFade;
 
     public override void Compose()
     {
-        GetOtherLinks();
+        GetOtherLinks();      
+    }
+
+    private void Start()
+    {
         StartCoroutine(ShowLogoRoutine());
     }
 
@@ -22,9 +25,12 @@ public class BootsTrapRoot : CompositeRoot
 
     private IEnumerator ShowLogoRoutine()
     {
-        
-        yield return new WaitForSecondsRealtime(2f);
-
-        SceneManager.LoadScene();
+        yield return new WaitForSecondsRealtime(3f);
+        _blackFade.FadeOut();
+        yield return new WaitForSecondsRealtime(8f);
+        _blackFade.FadeIn(() =>
+        {
+            SceneManager.LoadScene(_mainMenuSceneName);
+        });       
     }
 }
