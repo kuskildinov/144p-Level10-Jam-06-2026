@@ -1,9 +1,8 @@
-Shader "UI/SDFCutout"
+Shader "UI/SDFCutoutURP"
 {
     Properties
     {
         _Color ("Overlay Color", Color) = (0,0,0,0.75)
-
         _HolePosition ("Hole Position", Vector) = (0.5,0.5,0,0)
         _HoleRadius ("Hole Radius", Float) = 0.15
         _EdgeSoftness ("Edge Softness", Float) = 0.02
@@ -13,73 +12,74 @@ Shader "UI/SDFCutout"
     {
         Tags
         {
+            "RenderPipeline"="UniversalPipeline"
             "Queue"="Transparent"
-            "IgnoreProjector"="True"
             "RenderType"="Transparent"
+            "IgnoreProjector"="True"
         }
-
-        Cull Off
-        Lighting Off
-        ZWrite Off
-        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
-            CGPROGRAM
+            Name "Forward"
+
+            Blend SrcAlpha OneMinusSrcAlpha
+            Cull Off
+            ZWrite Off
+
+            HLSLPROGRAM
 
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            fixed4 _Color;
+            struct Attributes
+            {
+                float4 positionOS : POSITION;
+                float2 uv : TEXCOORD0;
+                half4 color : COLOR;
+            };
 
+            struct Varyings
+            {
+                float4 positionHCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                half4 color : COLOR;
+            };
+
+            half4 _Color;
             float4 _HolePosition;
             float _HoleRadius;
             float _EdgeSoftness;
 
-            struct appdata
+            Varyings vert(Attributes IN)
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                fixed4 color : COLOR;
-            };
+                Varyings OUT;
 
-            struct v2f
-            {
-                float4 vertex : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                fixed4 color : COLOR;
-            };
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.uv = IN.uv;
+                OUT.color = IN.color;
 
-            v2f vert(appdata v)
-            {
-                v2f o;
-
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                o.color = v.color;
-
-                return o;
+                return OUT;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            half4 frag(Varyings IN) : SV_Target
             {
-                float dist = distance(i.uv, _HolePosition.xy);
+                float dist = distance(IN.uv, _HolePosition.xy);
 
                 float alpha = smoothstep(
                     _HoleRadius,
                     _HoleRadius + _EdgeSoftness,
                     dist);
 
-                fixed4 col = _Color;
-                col *= i.color;
+                half4 col = _Color;
+                col *= IN.color;
                 col.a *= alpha;
 
                 return col;
             }
 
-            ENDCG
+            ENDHLSL
         }
     }
 }

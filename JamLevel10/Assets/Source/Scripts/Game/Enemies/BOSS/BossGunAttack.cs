@@ -11,6 +11,10 @@ public class BossGunAttack : MonoBehaviour
     [SerializeField] private float _fireRate = 0.1f;
     [SerializeField] private float _pauseAfter = 1f;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioSource _source;
+    [SerializeField] private AudioClip _attackSound;
+
     private Boss _boss;
 
     public void Initiazlie(Boss boss)
@@ -37,6 +41,7 @@ public class BossGunAttack : MonoBehaviour
         if (_boss == null || _boss.Player == null)
             return;
 
+        _source.PlayOneShot(_attackSound);
         EnemyBullet bullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation);
         Vector2 direction =
              (_boss.Player.transform.position -

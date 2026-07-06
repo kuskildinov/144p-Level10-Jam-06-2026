@@ -27,7 +27,7 @@ public class LevelRoot : CompositeRoot
 
         HideBlackFade();
     }
-
+   
     #region >>> other links
 
     private void GetOtherLinks()
@@ -82,6 +82,7 @@ public class LevelRoot : CompositeRoot
 
     private void ShowGameOverPanel()
     {
+        SoundsRoot.Instance.PlayDeadPhrase();
         _gameOverPanel.Open();
     }
 
@@ -176,6 +177,7 @@ public class LevelRoot : CompositeRoot
 
     public void OpenAbilityPanel()
     {
+        SoundsRoot.Instance.PlayLevelUpPhrase();
         _upgradePanel.Open();
     }
 

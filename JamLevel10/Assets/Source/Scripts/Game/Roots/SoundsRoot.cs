@@ -21,6 +21,18 @@ public class SoundsRoot : CompositeRoot
     [SerializeField] private AudioSource _backgroundSource;
     [SerializeField] private AudioClip _mainSound;
     [SerializeField] private AudioClip _bossSound;
+    [Header("Phrases")]
+    [SerializeField] private AudioSource _phrasesSource;
+    [SerializeField] private AudioClip _startPhrase_1;
+    [SerializeField] private AudioClip _startPhrase_2;
+    [SerializeField] private AudioClip _bossPhrase;
+    [SerializeField] private AudioClip _deadPhrase_1;
+    [SerializeField] private AudioClip _deadPhrase_2;
+    [SerializeField] private AudioClip _deadPhrase_3;
+    [SerializeField] private AudioClip _deadPhrase_4;
+    [SerializeField] private AudioClip _levelUpPhrase;
+
+    private bool _abilityPhraseSaid = false;
 
     public override void Compose()
     {
@@ -78,8 +90,62 @@ public class SoundsRoot : CompositeRoot
     public void StartBossSound()
     {
         _backgroundSource.clip = _bossSound;
+        _backgroundSource.Play();
     }
 
+    #endregion
+    #region >>> PHRASES
+
+    public void PlayStartPhrase_1()
+    {
+        _phrasesSource.PlayOneShot(_startPhrase_1);
+    }
+
+    public void PlayStartPhrase_2()
+    {
+        _phrasesSource.PlayOneShot(_startPhrase_2);
+    }
+
+    public void PlayBossPhrase()
+    {
+        _phrasesSource.PlayOneShot(_bossPhrase);
+    }
+
+    public void PlayDeadPhrase()
+    {
+        int index = Random.Range(0,4);
+        switch (index)
+        {
+            case 0:
+                {
+                    _phrasesSource.PlayOneShot(_deadPhrase_1);
+                    break;
+                }
+            case 1:
+                {
+                    _phrasesSource.PlayOneShot(_deadPhrase_2);
+                    break;
+                }
+            case 2:
+                {
+                    _phrasesSource.PlayOneShot(_deadPhrase_3);
+                    break;
+                }
+            case 3:
+                {
+                    _phrasesSource.PlayOneShot(_deadPhrase_4);
+                    break;
+                }
+        }
+    }
+
+    public void PlayLevelUpPhrase()
+    {
+        if (_abilityPhraseSaid)
+            return;
+        _abilityPhraseSaid = true;
+        _phrasesSource.PlayOneShot(_levelUpPhrase);
+    }
     #endregion
 
 }

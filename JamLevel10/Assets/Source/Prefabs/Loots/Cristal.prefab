@@ -242,7 +242,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 8177b05e12d0f7c418cb969f83d0356b, type: 2}
-  - {fileID: 2100000, guid: b1ea040e2bf350e42bd913213a2a8bbf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -318,15 +317,15 @@ MonoBehaviour:
   _rotateAmount: 8
   _spawnDuration: 0.35
   _disappearDuration: 0.4
+  _moveSpeed: 3
+  _minBounds: {x: -8, y: -8}
+  _maxBounds: {x: 8, y: 8}
   Type: 1
   IsBusy: 0
   _magnetRadius: 4
   _startSpeed: 3
   _acceleration: 12
   _collectDistance: 0.2
-  _moveSpeed: 3
-  _minBounds: {x: -8, y: -8}
-  _maxBounds: {x: 8, y: 8}
 --- !u!136 &1549242342241531583
 CapsuleCollider:
   m_ObjectHideFlags: 0

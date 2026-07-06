@@ -9,6 +9,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private Material _mainMaterial;
     [SerializeField] private Material _takeDamageMaterial;
+    
     [Header("Dead Effect")]
     [SerializeField] private DeadEffect _deadEffectPrefab;
 
@@ -74,14 +75,13 @@ public class Boss : MonoBehaviour
     }
 
     private IEnumerator BossLoop()
-    {
-        yield return new WaitForSeconds(_idleTime);
-
-        if (_attackIndex > 2)
-            _attackIndex = 0;
-
+    {      
         while (true)
-        {            
+        {
+            yield return new WaitForSeconds(_idleTime);
+            if (_attackIndex > 2)
+                _attackIndex = 0;
+
             switch (_attackIndex)
             {
                 case 0:

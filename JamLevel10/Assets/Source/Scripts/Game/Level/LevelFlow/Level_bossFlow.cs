@@ -28,7 +28,7 @@ public class Level_bossFlow : MonoBehaviour,ILevelFlow
 
     public void StartNewFlow()
     {
-        // SoundsRoot.PlayBossPhrase();
+        SoundsRoot.Instance.PlayBossPhrase();
         ShowDialogByIndex(7, () =>
         {
             _root.HideDialog();
@@ -76,7 +76,7 @@ public class Level_bossFlow : MonoBehaviour,ILevelFlow
 
     public IEnumerator StartFlow()
     {
-        //SoundsRoot.Instance.StartBossSound();
+        SoundsRoot.Instance.StartBossSound();
         ShowBoss();
         _boss.Initialzie(this);
         ShowDialogByIndex(7);

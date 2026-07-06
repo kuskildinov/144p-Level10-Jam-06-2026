@@ -67,7 +67,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 7bde98d2d1a07ee46a84f887b2c9e0d5, type: 2}
-  - {fileID: 2100000, guid: b1ea040e2bf350e42bd913213a2a8bbf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -169,16 +168,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611e890dc2323364ba4e88b7d8730622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AID
-  Type: 1
   _visual: {fileID: 1196571752923106214}
-  _moveSpeed: 3
-  _minBounds: {x: -8, y: -8}
-  _maxBounds: {x: 8, y: 8}
   _floatHeight: 0.25
   _floatDuration: 0.8
   _rotateAmount: 8
   _spawnDuration: 0.35
   _disappearDuration: 0.4
+  _moveSpeed: 3
+  _minBounds: {x: -8, y: -8}
+  _maxBounds: {x: 8, y: 8}
+  Type: 1
+  IsBusy: 0
 --- !u!136 &6310450904109011083
 CapsuleCollider:
   m_ObjectHideFlags: 0

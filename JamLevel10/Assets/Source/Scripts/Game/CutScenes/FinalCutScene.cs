@@ -35,6 +35,9 @@ public class FinalCutScene : MonoBehaviour
 
     public void StartCutScene()
     {
+        if (!_player.IsAlive)
+            return;
+
         StartCoroutine(StartCutSceneRoutine());
     }
 

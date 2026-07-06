@@ -59,9 +59,11 @@ public class Level_1_Flow : MonoBehaviour, ILevelFlow
 
     public IEnumerator StartTipsFlow()
     {
-        yield return new WaitForSecondsRealtime(3f);      
+        yield return new WaitForSecondsRealtime(3f);
+        SoundsRoot.Instance.PlayStartPhrase_1();
         ShowDialogByIndex(0,() =>
-        {           
+        {
+            SoundsRoot.Instance.PlayStartPhrase_2();
             ShowDialogByIndex(1);           
         });
         yield return new WaitForSecondsRealtime(20f);

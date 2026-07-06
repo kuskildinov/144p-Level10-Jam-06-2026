@@ -4,125 +4,124 @@ using DG.Tweening;
 
 public class BossLaserAttack : MonoBehaviour
 {
+    [Header("Links")]
     [SerializeField] private LineRenderer _line;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Transform _crosshairPrefab;
-    [SerializeField] private LayerMask _playerLayer;
-    [SerializeField] private AnimationCurve _widthCurve;
+
+    [Header("Timings")]
     [SerializeField] private float _trackTime = 1.5f;
     [SerializeField] private float _chargeTime = 1f;
     [SerializeField] private float _fireTime = 0.5f;
+
+    [Header("Width")]
     [SerializeField] private float _aimWidth = 0.05f;
-    [SerializeField] private float _chargeWidth = 0.15f;
     [SerializeField] private float _fireWidth = 0.8f;
 
+    [Header("Colors")]
+    [SerializeField] private Color aimColor = new(0.65f, 0f, 1f);
+    [SerializeField] private Color chargeColor = new(1f, 0f, 0.6f);
+
+    [Header("Sounds")]
+    [SerializeField] private AudioSource _source;
+    [SerializeField] private AudioClip _prepareSound;
+    [SerializeField] private AudioClip _laserSound;
+
+    [SerializeField] private AnimationCurve _widthCurve;
+
     private Boss _boss;
-    private Transform _crosshairInstance;
+    private Transform _crosshair;
 
     private Tween _widthTween;
-    private Tween _colorTween;
 
-    [SerializeField] private Color aimColor = new Color(0.65f, 0f, 1f);   // purple
-    [SerializeField] private Color chargeColor = new Color(1f, 0f, 0.6f); // red-purple
+    private bool _executing;
 
     public void Initialize(Boss boss)
     {
         _boss = boss;
+        ResetLaser();
     }
 
     public IEnumerator Execute()
     {
-        Vector3 lockedTarget = Vector3.zero;
+        if (_executing)
+            yield break;
 
-        _line.enabled = false;
-        SetAimVisual();               
-        float t = 0f;
+        yield return new WaitForSecondsRealtime(3f);
 
-        while (t < _trackTime)
+        _executing = true;
+
+        ResetLaser();
+
+        float timer = 0f;
+        Vector3 target = Vector3.zero;
+
+        while (timer < _trackTime)
         {
-            Vector3 target = _boss.Player.transform.position;
+            if (_boss == null || _boss.Player == null)
+            {
+                FinishAttack();
+                yield break;
+            }
 
-            UpdateCrosshair(target);
-            DrawLaser(target);
+            target = _boss.Player.transform.position;
 
-            t += Time.deltaTime;
+            UpdateCrosshair(target);          
+            timer += Time.deltaTime;
             yield return null;
         }
 
-        lockedTarget = _boss.Player.transform.position;
+        yield return Charge(target);
 
-        yield return StartCoroutine(Charge(lockedTarget));
+        if (_crosshair != null)
+            Destroy(_crosshair.gameObject);
 
-        if (_crosshairInstance != null)
-            Destroy(_crosshairInstance.gameObject);
+        yield return Fire(target);
 
-        Vector3 start = _firePoint.position;
-        Vector3 direction = (lockedTarget - start).normalized;              
-        Vector3 endPoint = start + direction * 100f;
-
-        yield return StartCoroutine(FireLaser(endPoint));
+        FinishAttack();
     }
-       
-    private void SetAimVisual()
-    {
-        KillTweens();
 
-        _line.startColor = aimColor;
-        _line.endColor = aimColor;
-
-        _line.startWidth = _aimWidth;
-        _line.endWidth = _aimWidth;
-    }
-       
-    private IEnumerator Charge(Vector3 lockedTarget)
+    private IEnumerator Charge(Vector3 target)
     {
         _boss.ToggleLookAtPlayer(false);
 
-        KillTweens();
+        float timer = 0f;
 
-        float t = 0f;
-
-        while (t < _chargeTime)
+        _source.PlayOneShot(_prepareSound);
+        while (timer < _chargeTime)
         {
-            float pulse = Mathf.PingPong(Time.time * 10f, 1f);
+            float pulse = Mathf.Lerp(1f, 1.3f, Mathf.PingPong(timer * 4f, 1f));
 
-            _line.startWidth = Mathf.Lerp(0.05f, 0.2f, pulse);
-            _line.endWidth = _line.startWidth;
+            if (_crosshair != null)
+                _crosshair.localScale = Vector3.one * pulse;
 
-            _line.startColor = Color.Lerp(aimColor, chargeColor, pulse);
-            _line.endColor = _line.startColor;
-
-            DrawLaser(lockedTarget);
-
-            t += Time.deltaTime;
+            timer += Time.deltaTime;
             yield return null;
         }
     }
 
-    private IEnumerator FireLaser(Vector3 target)
+    private IEnumerator Fire(Vector3 target)
     {
-        KillTweens();
-
-        _line.enabled = true;
-
         Vector3 start = _firePoint.position;
-        Vector3 direction = (target - start).normalized;
+        Vector3 dir = (target - start).normalized;
 
         const float beamLength = 100f;
 
-        _line.widthCurve = _widthCurve;
-               
-        _line.widthMultiplier = 0.05f;
+        _line.enabled = true;
 
+        _source.PlayOneShot(_laserSound);
+        _line.widthCurve = _widthCurve;
         _line.startColor = chargeColor;
         _line.endColor = chargeColor;
-               
-        Tween widthTween = DOTween.To(
+        _line.widthMultiplier = 0.05f;
+
+        _widthTween?.Kill();
+
+        _widthTween = DOTween.To(
             () => _line.widthMultiplier,
             x => _line.widthMultiplier = x,
             _fireWidth,
-            0.1f)
-            .SetEase(Ease.OutExpo);
+            0.1f);
 
         bool damageDone = false;
 
@@ -131,63 +130,83 @@ public class BossLaserAttack : MonoBehaviour
         while (timer < _fireTime)
         {
             start = _firePoint.position;
-            direction = (target - start).normalized;
+            dir = (target - start).normalized;
 
-            Vector3 endPoint = start + direction * beamLength;
+            Vector3 end = start + dir * beamLength;
 
-            if (Physics.Raycast(start, direction, out RaycastHit hit, beamLength))
-            {                
-                if (!damageDone)
+            _line.SetPosition(0, start);
+            _line.SetPosition(1, end);
+
+            if (!damageDone &&
+                Physics.Raycast(start, dir, out RaycastHit hit, beamLength))
+            {
+                Player player = hit.collider.GetComponentInParent<Player>();
+
+                if (player != null)
                 {
-                    Player player = hit.collider.GetComponentInParent<Player>();
-
-                    if (player != null)
-                    {
-                        damageDone = true;
-                        player.TakeDamage();
-                    }
+                    damageDone = true;
+                    player.TakeDamage();
                 }
             }
 
-            _line.SetPosition(0, start);
-            _line.SetPosition(1, endPoint);
-           
             timer += Time.deltaTime;
             yield return null;
         }
 
-        yield return widthTween.WaitForCompletion();
+        _widthTween?.Kill();
 
-        // Исчезновение
-        yield return DOTween.To(
+        _widthTween = DOTween.To(
             () => _line.widthMultiplier,
             x => _line.widthMultiplier = x,
             0f,
-            0.15f).WaitForCompletion();
+            0.15f);
+
+        yield return new WaitForSeconds(0.15f);
 
         _line.enabled = false;
     }
-
-    private void DrawLaser(Vector3 target)
-    {
-        _line.SetPosition(0, _firePoint.position);
-        _line.SetPosition(1, target);
-    }
-       
+  
     private void UpdateCrosshair(Vector3 target)
     {
-        if (_crosshairInstance == null)
-        {
-            _crosshairInstance = Instantiate(_crosshairPrefab);
-        }
+        if (_crosshair == null)
+            _crosshair = Instantiate(_crosshairPrefab);
 
-        _crosshairInstance.position = target;
+        _crosshair.position = target;
     }
 
-    private void KillTweens()
+    private void ResetLaser()
     {
         _widthTween?.Kill();
-        _colorTween?.Kill();
-        DOTween.Kill(_line);
+
+        _line.enabled = false;
+
+        _line.widthCurve = AnimationCurve.Linear(0, 1, 1, 1);
+
+        _line.startWidth = _aimWidth;
+        _line.endWidth = _aimWidth;
+
+        _line.widthMultiplier = 1f;
+
+        _line.startColor = aimColor;
+        _line.endColor = aimColor;
+    }
+
+    private void FinishAttack()
+    {
+        _executing = false;
+
+        _widthTween?.Kill();
+
+        if (_crosshair != null)
+            Destroy(_crosshair.gameObject);
+
+        _line.enabled = false;
+
+        _boss.ToggleLookAtPlayer(true);
+    }
+
+    private void OnDisable()
+    {
+        FinishAttack();
     }
 }

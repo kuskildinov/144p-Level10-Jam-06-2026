@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovment : MonoBehaviour
 {
@@ -85,6 +86,11 @@ public class PlayerMovment : MonoBehaviour
         _player.TryDash(value);
     }
 
+    private void OnExitChange()
+    {
+        SceneManager.LoadScene(1);
+    }
+
     #endregion
     #region >>> EVENTS
 
@@ -92,12 +98,14 @@ public class PlayerMovment : MonoBehaviour
     {
         _inputHandler.MoveInput += OnMoveInputChanged;
         _inputHandler.DashInput += OnDashInputChanged;
+        _inputHandler.ExitInput += OnExitChange;
     }
 
     private void UnsubscriteFromEvents()
     {
         _inputHandler.MoveInput -= OnMoveInputChanged;
         _inputHandler.DashInput -= OnDashInputChanged;
+        _inputHandler.ExitInput -= OnExitChange;
     }
 
     #endregion

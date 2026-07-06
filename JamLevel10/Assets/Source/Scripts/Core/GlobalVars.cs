@@ -4,7 +4,7 @@ public static class GlobalVars
 {
     public static int CristalCount = 0;
     public static int CurrentMaxCristalCount = 5;
-    public static bool NeedSkipTips = true;
+    public static bool NeedSkipTips = false;
     [Header("Abilities")]
     public static float StartPlayerDamage = 1;
     public static float CurrentPlayerDamage = 1;
